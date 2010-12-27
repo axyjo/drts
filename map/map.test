@@ -1,0 +1,43 @@
+<?php
+
+class GameMapTestCase extends DrupalWebTestCase {
+  public function setUp() {
+    parent::setUp('map', 'game');
+  }
+
+  public static function getInfo() {
+    return array(
+      'name' => t('Map'),
+      'description' => t('Tests for the map module.'),
+      'group' => t('Game'),
+    );
+  }
+}
+
+class GameMapCoordinateTestCase extends DrupalWebTestCase {
+  public function setUp() {
+    require_once(drupal_get_path('module', 'map').'/map.coordinate.inc');
+  }
+  
+  public static function getInfo() {
+    return array(
+      'name' => t('Coordinate'),
+      'description' => t('Tests for the map module\'s Coordinate class.'),
+      'group' => t('Game'),
+    );
+  }
+  
+  public function testCreate() {
+    $coordinate = new Coordinate(0,0);
+    $this->assertTrue(is_a($coordinate, 'Coordinate'), 'Expecting coordinate to be a Coordinate object.');
+  }
+  
+  public function testRead() {
+    $coordinate = new Coordinate(0,0);
+    $array = $coordinate->getCoordinates();
+    $this->assertTrue(is_array($array), 'Coordinate class returns an array.')
+    $this->assertTrue($array['x'] == 0, 'X coordinate is matched.');
+    $this->assertTrue($array['y'] == 0, 'Y coordinate is matched.');    
+  }
+  
+}

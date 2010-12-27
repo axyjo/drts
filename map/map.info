@@ -7,4 +7,5 @@ files[] = map.module
 files[] = map.tiles.inc
 files[] = map.admin.inc
 files[] = map.coordinate.inc
+files[] = map.test
 
