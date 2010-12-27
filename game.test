@@ -1,0 +1,24 @@
+<?php
+
+class GameTestCase extends DrupalWebTestCase {
+  var $admin_user;
+  var $basic_user;
+  
+  public function setUp() {
+    parent::setUp('game');
+    //$this->admin_user = $this->drupalCreateUser(array('administer nodes'));
+    //$this->basic_user = $this->drupalCreateUser();
+  }
+  
+  public static function getInfo() {
+    return array(
+      'name' => t('Game base'),
+      'description' => t('Tests for the game base module.'),
+      'group' => t('Game'),
+    );
+  }
+  
+  public function testFake() {
+    $this->assertTrue(1);
+  }
+}
