@@ -1,0 +1,40 @@
+<?php
+// $Id$
+
+/**
+ * Implements hook_install().
+ */
+function map_install() {
+  variable_set('map_clear_cache', true);
+  variable_set('map_min_size', 1);
+  variable_set('map_max_size', 960);
+  variable_set('map_min_zoom',  960);
+  variable_set('map_max_zoom', 1);
+  variable_set('map_tile_size', 256);
+  variable_set('map_default_x', 480);
+  variable_set('map_default_y', 480);
+  variable_set('map_default_z', 7);
+}
+
+function map_schema() {
+  //Drupal screams if hook_schema exists, but nothing is returned.
+  $blank_array = array();
+  return $blank_array;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function map_uninstall() {
+  cache_clear_all('map_*', 'cache', TRUE);
+  variable_del('map_clear_cache');
+  variable_del('map_min_size');
+  variable_del('map_max_size');
+  variable_del('map_min_zoom');
+  variable_del('map_max_zoom');
+  variable_del('map_tile_size');
+  variable_del('map_default_x');
+  variable_del('map_default_y');
+  variable_del('map_default_z');
+}
+

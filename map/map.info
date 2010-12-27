@@ -1,0 +1,9 @@
+name = Map
+description = This module provides an interface for the game.
+core = 7.x
+package = "Game"
+dependencies[] = game
+files[] = map.module
+files[] = map.tiles.inc
+files[] = map.admin.inc
+

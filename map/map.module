@@ -1,0 +1,74 @@
+<?php
+
+function map_display() {
+  module_invoke_all('load_map');
+  
+  //TODO: finish off centerx and centery for map.
+  //db_result(db_query('SELECT * FROM {game_'));
+
+  // Only add CSS and Javascript on the map_display() page.
+  drupal_add_css(drupal_get_path('module', 'map').'/map.css', array('media'=>'screen'));
+  drupal_add_js(drupal_get_path('module', 'map').'/map.js');
+
+  // Pass Javascript variables.
+  $settings['map_size'] = variable_get('map_max_size');
+  $settings['tile_size'] = variable_get('map_tile_size');
+  $settings['defaultx'] = variable_get('map_default_x');
+  $settings['defaulty'] = variable_get('map_default_y');
+  $settings['defaultz'] = variable_get('map_default_z');
+  drupal_add_js($settings, 'setting');
+
+  $return = '';
+  $return .= '<div id="map">';
+  $return .= '<div id="map_viewport">&nbsp;</div><div id="map_position"></div>';
+  $return .= '</div>';
+  $return .= '<div id="map_info">';
+	$return .= '<div id="map_data"></div><div id="throbber"></div>';
+  $return .= '</div>';
+
+  return $return;
+}
+
+function map_menu() {
+  $items['game'] = array(
+    'title' => 'Game',
+    'description' => 'View map.',
+    'page callback' => 'map_display',
+    'access arguments' => array(1),
+  );
+  $items['admin/config/game/map'] = array(
+    'title' => 'Map',
+    'description' => 'Change settings for the map module.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('map_admin_settings_form'),
+    'access arguments' => array('administer game'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'map.admin.inc',
+  );
+  $items['base/%/%/%'] = array(
+    'title' => 'Viewing tile',
+    'description' => 'Visual representation of tiles.',
+    'page callback' => 'map_tile_handler',
+    'access arguments' => array('access content'),
+    'page arguments' => array(1,2,3, 'base'),
+    'type' => MENU_CALLBACK,
+    'file' => 'map.tiles.inc',
+  );
+  $items['map_click/%/%'] = array(
+    'title' => 'Viewing information',
+    'description' => 'Textual representation of tiles.',
+    'page callback' => 'map_tile_click',
+    'access arguments' => array('access content'),
+    'page arguments' => array(1,2),
+    'type' => MENU_CALLBACK,
+    'file' => 'map.tiles.inc',
+  );
+
+  return $items;
+}
+
+function map_get_ninesixty_factors() {
+  return array(1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 16, 20, 24, 30, 32, 40, 48, 60, 64, 80, 96, 120, 160, 192, 240, 320, 480, 960);
+}
+
+

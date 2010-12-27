@@ -1,0 +1,45 @@
+<?php
+
+function kingdoms_install() {
+}
+
+function kingdoms_schema() {
+  $schema['game_kingdoms'] = array(
+    'description' => 'Stores the different kingdoms and their attributes.',
+    'fields' => array(
+      'kid' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Unique identifier for the kingdom.',
+      ),
+      'uid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'default' => 0,
+        'description' => 'The character who controls this kingdom.',
+      ),
+      'name' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The visible name of the kingdom.',
+      ),
+      'capital' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'description' => 'The capital city of the kingdom. Is mutable.',
+      ),
+    ),
+    'primary key' => array('kid'),
+  );
+
+
+  return $schema;
+}
+
+function kingdoms_uninstall() {
+}
+

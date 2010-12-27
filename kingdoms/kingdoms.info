@@ -1,0 +1,8 @@
+name = Kingdoms
+description = Provides functions and allocates a new kingdom for players in a round
+core = 7.x
+package = "Game"
+dependencies[] = game
+dependencies[] = land
+files[] = kingdoms.module
+

@@ -1,0 +1,75 @@
+<?php
+
+function get_coords($x, $y) {
+  return array('x' => $x, 'y' => $y);
+}
+
+// TODO: Add checking for map boundaries.
+function get_west($coords) {
+  return array('x' => $coords['x']+1, 'y' => $coords['y']);
+}
+
+function get_east($coords) {
+  return array('x' => $coords['x']-1, 'y' => $coords['y']);
+}
+
+function get_north($coords) {
+  return array('x' => $coords['x'], 'y' => $coords['y']+1);
+}
+
+function get_sound($coords) {
+  return array('x' => $coords['x'], 'y' => $coords['y']-1);
+}
+
+function get_neighbours($coords) {
+  $neighbours = array();
+  $neighbours['w'] = get_west($coords);
+  $neighbours['n'] = get_north($coords);
+  $neighbours['e'] = get_east($coords);
+  $neighbours['s'] = get_south($coords);
+  $neighbours['nw'] = get_north($neighbours['w']);
+  $neighbours['ne'] = get_north($neighbours['e']);
+  $neighbours['se'] = get_south($neighbours['e']);
+  $neighbours['sw'] = get_south($neighbours['w']);
+  return $neighbours;
+}
+
+function get_distance($start, $end) {
+  $delta_x = $end['x'] - $start['x'];
+  $delta_y = $end['y'] - $start['y'];
+  $distance_squared = pow($delta_x, 2) + pow($delta_y, 2);
+  return sqrt($distance_squared);
+}
+
+function get_cells_within_area($center, $area) {
+  // The area must be a perfect square. If it isn't, then the dimensions of the
+  // bounding box are ambigious.
+  if(!is_int($area) || !is_int(sqrt($area))) {
+    return FALSE;
+  } else {
+    return get_cells_within_rectangle($center, sqrt($area), sqrt($area));
+  }
+}
+
+function get_cells_within_rectangle($center, $width, $height) {
+  $x_range = $width/2;
+  $y_range = $height/2;
+  
+  if($width < 0 || $height < 0 || !is_int($x_range) || !is_int($y_range)) {
+    return FALSE;
+  }
+  
+  $x_init = $center['x'] - $x_range;
+  $y_init = $center['y'] - $y_range;
+  $x_final = $center['x'] + $x_range;
+  $y_final = $center['y'] + $y_range;
+  
+  $return = array();
+  for($i = $x_init; $i <= $x_final; $i++) {
+    for($j = $y_init; $j <= $y_final; $j++) {
+      $return[] = array('x' => $i, 'y' => $j);
+    }
+  }
+  return $return;
+}
+

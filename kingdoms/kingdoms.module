@@ -1,0 +1,51 @@
+<?php
+
+function kingdom_exists($character) {
+  if ($character) {
+    $result = db_query('SELECT * FROM {game_kingdoms} WHERE character_id=:cid LIMIT 1', array(':cid', $character));
+    return db_fetch_object($result);
+  } else {
+    return FALSE;
+  }
+}
+
+function kingdoms_create_dialog($x, $y, $character) {
+  /*
+       * TODO:
+       * surrounding occupied:
+       * 0-1: Fine place
+       * 2-4: Reasonable
+       * 5+: Dangerous
+       */
+
+  $result = $x.', '.$y.' seems like a fine place for you to lay down your roots here, '.$character.'.';
+  $result .= drupal_get_form('kingdoms_create_form', $x, $y);
+  return $result;
+}
+
+function kingdoms_create_form($form_state, $x, $y) {
+  $form['kingdom_name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Kingdom Name'),
+    '#maxlength' => 50,
+    '#size' => 40,
+  );
+  $form['capital_name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Capital City\'s Name'),
+    '#maxlength' => 50,
+    '#size' => 40,
+  );
+  $form['capital_x'] = array(
+    '#type' => 'hidden',
+    '#value' => $x,
+  );
+  $form['capital_y'] = array(
+    '#type' => 'hidden',
+    '#value' => $y,
+  );
+
+  return $form;
+}
+
+//function kingdoms_create_confirm(

@@ -1,0 +1,14 @@
+<?php
+
+function game_page_alter($page) {
+  $notice = '<div>&copy; 2007 - 2010 Akshay Joshi and Nikhil Mahajan. All Rights Reserved.</div>';
+  $page['footer']['main'] = array('#markup' => $notice);
+}
+
+/**
+ * Implements hook_user_login().
+ */
+function game_user_login(&$edit, $account) {
+  drupal_goto('game');
+}
+
