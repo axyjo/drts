@@ -205,6 +205,7 @@
         updatePosition(e);
       }
       resize();
+      window.setTimeout(resize, 100);
     }
 
     function pan(delta_x, delta_y, e) {
