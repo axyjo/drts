@@ -12,3 +12,19 @@ function game_user_login(&$edit, $account) {
   drupal_goto('game');
 }
 
+function game_library() {
+  return array(
+    'css_reset' => array(
+      'title' => 'CSS Reset',
+      'website' => 'http://meyerweb.com/eric/tools/css/reset/',
+      'version' => '1.0',
+      'css' => array(
+        drupal_get_path('module', 'game') . '/reset.css' => array(
+          'type' => 'file',
+          'media' => 'screen',
+        ),
+      ),
+    ),
+  );
+}
+
