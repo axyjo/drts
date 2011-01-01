@@ -40,8 +40,8 @@
       dragStartTop = e.clientY;
       viewport.css("cursor" , "move");
 
-      top = stripPx(viewport.css("top"));
-      left = stripPx(viewport.css("left"));
+      top = viewport.offset().top;
+      left = viewport.offset().left;
 
       dragging = true;
       // The following return statement exists in order to prevent the user's
@@ -97,8 +97,8 @@
 
       // Set x_val and y_val equal to the distance from the top-left of the
       // image layer.
-      var x_val = e.pageX - offset.left + Math.abs(stripPx(viewport.css("left")));
-      var y_val = e.pageY - offset.top + Math.abs(stripPx(viewport.css("top")));
+      var x_val = e.pageX - offset.left + Math.abs(viewport.offset().left);
+      var y_val = e.pageY - offset.top + Math.abs(viewport.offset().top);
 
       // Change x_val and y_val such that the script takes into consideration
       // the current zoom level and the tile size. First, divide by tile size to
@@ -129,8 +129,8 @@
       }
       zoom = z;
       totalSize = tileSize*mapSize/resolutions[zoom];
-      viewport.width(totalSize + "px");
-      viewport.height(totalSize + "px");
+      viewport.width(totalSize);
+      viewport.height(totalSize);
       if(typeof e  != 'undefined') {
         updatePosition(e);
       }
@@ -138,8 +138,8 @@
     }
 
     function pan(delta_x, delta_y, e) {
-      var x = stripPx(viewport.css("left"))-delta_x;
-      var y = stripPx(viewport.css("top"))-delta_y;
+      var x = viewport.offset().left-delta_x;
+      var y = viewport.offset().top-delta_y;
       viewport_safe_move(x, y);
       updatePosition(e);
     }
@@ -166,15 +166,10 @@
       // loaded images like Google Maps.
     }
 
-    function stripPx(value) {
-      if(value == "0" || value == "") return 0;
-      return parseFloat(value.substring(0, value.length - 2));
-    }
-
     function getVisibleTiles() {
       // Get the current offset from the 0, 0 position.
-      var mapX = stripPx(viewport.css("left"));
-      var mapY = stripPx(viewport.css("top"));
+      var mapX = viewport.offset().left;
+      var mapY = viewport.offset().top;
 
       // Get the first tile that should be visible. The border_cache variable
       // exists as the script should download border_cache tiles beyond the
