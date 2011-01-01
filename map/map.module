@@ -31,7 +31,6 @@ function map_display() {
 
 function map_menu() {
   $items['game'] = array(
-    'title' => 'Game',
     'description' => 'View map.',
     'page callback' => 'map_display',
     'access arguments' => array(1),
