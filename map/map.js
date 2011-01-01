@@ -12,6 +12,8 @@
     var zoom = Drupal.settings.defaultz;
     var totalSize;
     var border_cache = 2;
+    // This is the minimum pixel distance for inertial dragging to work.
+    var minDistance = 40;
     // By storing the look-ups in a variable, we may be able to squeeze some
     // extra performance as it saves the browser from having to look up each div
     // every single time we want to perform an action on it.
@@ -36,6 +38,7 @@
     });
 
     map.bind("mousedown", function(e) {
+      map.data("mouseEvents", [e]);
       dragStartLeft = e.clientX;
       dragStartTop = e.clientY;
       viewport.css("cursor" , "move");
@@ -51,6 +54,14 @@
 
     map.bind("mousemove", function(e) {
       if(dragging) {
+        var mouseEvents = map.data("mouseEvents");
+        if (e.timeStamp - mouseEvents[mouseEvents.length-1].timeStamp > 40) {
+          mouseEvents.push(e);
+          if (mouseEvents.length > 2) {
+            mouseEvents.shift();
+          }
+        }
+
         var new_left = left + (e.clientX - dragStartLeft);
         var new_top = top + (e.clientY - dragStartTop);
         viewport_safe_move(new_left, new_top);
@@ -63,8 +74,64 @@
     // so that even if the mouse is let go when the cursor is ourside of the
     // div, the map will not drag again when the cursor is brought in to the
     // div again.
-    $(document).bind("mouseup", function() {
+    $(document).bind("mouseup", function(e) {
       dragging = false;
+      var mouseEvents = map.data("mouseEvents");
+      if (e.timeStamp - mouseEvents[mouseEvents.length-1].timeStamp > 40) {
+        mouseEvents.push(e);
+        if (mouseEvents.length > 2) {
+          mouseEvents.shift();
+        }
+      }
+
+      viewport.stop();
+      viewport.css("text-indent", 100);
+
+      var lastE = map.data("mouseEvents").shift();
+
+      var x1 = lastE.pageX;
+      var y1 = lastE.pageY;
+      var t1 = lastE.timeStamp;
+      var x2 = e.pageX;
+      var y2 = e.pageY;
+      var t2 = e.timeStamp;
+
+      // Deltas
+      var dX = x2 - x1,
+          dY = y2 - y1,
+          dTime = Math.max(t2 - t1, 1);
+
+      // Speeds
+      var speedX = Math.max(Math.min(dX/dTime, 1), -1),
+          speedY = Math.max(Math.min(dY/dTime, 1), -1);
+
+      // Distance moved (Euclidean distance)
+      var distance = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
+      
+      if (distance > minDistance) {
+        // Momentum
+        var lastStepTime = new Date();
+        viewport.animate({ textIndent: 0 }, {
+          duration: Math.max(Math.abs(speedX), Math.abs(speedY)) * 2000,
+          step: function(currentStep){
+              speedX *= (currentStep / 100);
+              speedY *= (currentStep / 100);
+
+              var now = new Date();
+              var stepDuration = now.getTime() - lastStepTime.getTime();
+
+              lastStepTime = now;
+
+              var position = viewport.position();
+
+              var newLeft = (position.left + (speedX * stepDuration / 4)),
+                  newTop = (position.top + (speedY * stepDuration / 4));
+
+              viewport_safe_move(newLeft, newTop);
+          }
+        });
+      }
+
       viewport.css("cursor", "");
       checkAllLayers();
     });
