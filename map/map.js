@@ -281,10 +281,16 @@
           visTilesMap[tileName] = true;
           var divName = "#" + tileName;
           if($(divName).length == 0) {
-            var url = Drupal.settings.basePath + "?q=tiles";
-            $.getJSON(url, {x:tileArr[0], y: tileArr[1], z: zoom, type: type}, function(data) {
-              viewport.append(data.html);
-            }, "json");
+            var cached = viewport.data(tileName);
+            if(cached != undefined) {
+              viewport.append(cached.html);
+            } else {
+              var url = Drupal.settings.basePath + "?q=tiles";
+              $.getJSON(url, {x:tileArr[0], y: tileArr[1], z: zoom, type: type}, function(data) {
+                viewport.append(data.html);
+                viewport.data(tileName, data);
+              }, "json");
+            }
           }
         }
       }
