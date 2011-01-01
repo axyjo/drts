@@ -4,8 +4,6 @@
     var mapSize = Drupal.settings.map_size;
     // Resolutions are zoom levels to squares on the edge of a tile.
     var resolutions = {0: 1,1: 2,2: 4, 3:8, 4:16, 5:32, 6:64, 7:128, 8:256, 9:512};
-    var viewportWidth = 768;
-    var viewportHeight = 576;
     var dragging = false;
     var top;
     var left;
@@ -149,14 +147,14 @@
     function viewport_safe_move(left, top) {
       if(left > 0) {
         left = 0;
-      } else if(left < (-1*totalSize)+viewportWidth) {
-        left = (-1*totalSize)+viewportWidth;
+      } else if(left < (-1*totalSize)+viewport.width()) {
+        left = (-1*totalSize)+viewport.width();
       }
 
       if(top > 0) {
         top = 0;
-      } else if(top < (-1*totalSize)+viewportHeight) {
-        top = (-1*totalSize)+viewportHeight;
+      } else if(top < (-1*totalSize)+viewport.height()) {
+        top = (-1*totalSize)+viewport.height();
       }
 
       viewport.css("top", top+"px");
@@ -187,8 +185,8 @@
       // Get the number of tiles that are completely visible. The border_cache
       // variable exists so that the script downloads partially visible tiles as
       // well. This value does not change unless the viewport size is changed.
-      var tilesX = Math.ceil(viewportWidth / tileSize) + border_cache;
-      var tilesY = Math.ceil(viewportHeight / tileSize) + border_cache;
+      var tilesX = Math.ceil(viewport.width() / tileSize) + border_cache;
+      var tilesY = Math.ceil(viewport.height() / tileSize) + border_cache;
 
       // Generate the list of visible tiles based on the above variables.
       var visibleTiles = [];
