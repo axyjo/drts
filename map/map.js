@@ -321,6 +321,7 @@
       checkAllLayers();
     }
     resize();
+    window.setTimeout(resize, 100);
     $(window).resize(resize);
 
   });
