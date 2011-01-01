@@ -219,7 +219,7 @@
       $("#map_viewport img").each(function(i) {
         if($(this).hasClass(type)) {
           var id = $(this).attr('id');
-          if(visTilesMap(id) != true) {
+          if(visTilesMap[id] != true) {
             $(this).remove();
           }
         }
