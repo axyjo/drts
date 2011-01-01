@@ -1,6 +1,12 @@
+.section {
+  margin: 0 !important;
+}
+
 #map {
-  width: 768px; height: 576px;
-  border: 1px solid black;
+  position:absolute;
+  left:0; top:0;
+  width: auto;
+  height: auto;
   margin:auto;
   overflow: hidden;
 }
@@ -9,6 +15,7 @@
   width: 768px;
   margin: auto;
   height: 100px;
+  display:none;
 }
 
 #throbber {
@@ -29,6 +36,7 @@
   position: absolute;
   top: 645px;
   padding-left: 5px;
+  display:none;
 }
 
 #map_viewport {
