@@ -239,6 +239,14 @@
         }
       });
     }
+
+    function resize() {
+      viewport.width($(window).width());
+      viewport.height($(window).height());
+    }
+    resize();
+    $(window).resize(resize);
+
   });
 })(jQuery);
 
