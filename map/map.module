@@ -19,9 +19,8 @@ function map_display() {
   $settings['defaultz'] = variable_get('map_default_z');
   drupal_add_js($settings, 'setting');
 
-  $return = '';
-  $return .= '<div id="map">';
-  $return .= '<div id="map_viewport">&nbsp;</div><div id="map_position"></div>';
+  $return = '<div id="map">';
+  $return .= '<div id="map_viewport"></div><div id="map_position"></div>';
   $return .= '</div>';
   $return .= '<div id="map_info">';
 	$return .= '<div id="map_data"></div><div id="throbber"></div>';
