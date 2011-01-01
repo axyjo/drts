@@ -31,12 +31,14 @@ function map_display() {
 }
 
 function map_get_tile_paths() {
+  $dir = getcwd();
   chdir(drupal_get_path('module', 'map').'/tiles/');
   $glob = glob('*.png');
   $return = array();
   foreach($glob as $file) {
     $return[] = drupal_get_path('module', 'map').'/tiles/'.$file;
   }
+  chdir($dir);
   return $return;
 }
 
