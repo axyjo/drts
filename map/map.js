@@ -23,9 +23,6 @@
     // Store the hover/click request in a variable so that it can be easily
     // aborted.
     var ajax_request;
-
-    throbber.hide();  
-    setZoom(zoom);
     
     // Preload and cache tile images by adding them to a hidden element.
     var cache = $('body').append('<div id="cache" style="display:none/>').children('#cache');
@@ -207,7 +204,7 @@
       if(typeof e  != 'undefined') {
         updatePosition(e);
       }
-      checkAllLayers();
+      resize();
     }
 
     function pan(delta_x, delta_y, e) {
@@ -320,9 +317,11 @@
       viewport.height($(window).height()-Drupal.toolbar.height());
       checkAllLayers();
     }
-    resize();
     window.setTimeout(resize, 100);
     $(window).resize(resize);
+    
+    throbber.hide();  
+    setZoom(zoom);
 
   });
 })(jQuery);
