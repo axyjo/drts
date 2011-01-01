@@ -17,6 +17,7 @@ function map_display() {
   $settings['defaultx'] = variable_get('map_default_x');
   $settings['defaulty'] = variable_get('map_default_y');
   $settings['defaultz'] = variable_get('map_default_z');
+  $settings['precache'] = map_get_tile_paths();
   drupal_add_js($settings, 'setting');
 
   $return = '<div id="map">';
@@ -26,6 +27,16 @@ function map_display() {
 	$return .= '<div id="map_data"></div><div id="throbber"></div>';
   $return .= '</div>';
 
+  return $return;
+}
+
+function map_get_tile_paths() {
+  chdir(drupal_get_path('module', 'map').'/tiles/');
+  $glob = glob('*.png');
+  $return = array();
+  foreach($glob as $file) {
+    $return[] = drupal_get_path('module', 'map').'/tiles/'.$file;
+  }
   return $return;
 }
 
