@@ -47,13 +47,14 @@ function map_tile_handler($x, $y, $z, $type) {
 
 function map_base_tile_generate($x, $y, $z, $tile_size) {
   $tiles_path = drupal_get_path('module', 'map').'/tiles/';
-  $base = imagecreatefrompng($tiles_path.'grass_'.rand(0, 20).'.png');
+  $base = imagecreatefrompng($tiles_path.'grass.png');
   $tile = imagecreatetruecolor($tile_size,$tile_size);
   if(imagesx($base) != $tile_size || imagesy($base) != $tile_size) {
-    imagecopyresampled($tile, $base, 0, 0, 0, 0, $tile_size, $tile_size, imagesx($base), imagesy($base));
-    return $tile;
+    $x = rand(0, imagesx($base)-$tile_size-1);
+    $y = rand(0, imagesy($base)-$tile_size-1);
+    imagecopyresampled($tile, $base, 0, 0, $x, $y, $tile_size, $tile_size, $tile_size, $tile_size);
   }
-  return $base;
+  return $tile;
 }
 
 function map_transparent_tile_generate($x, $y, $z, $tile_size) {
