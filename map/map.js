@@ -200,14 +200,12 @@
 
     function checkLayers(type) {
       var visTiles = getVisibleTiles();
-      clearTiles(type);
       var visTilesMap = {};
       for(var i = 0; i < visTiles.length; i++) {
         var tileArr = visTiles[i];
         if(tileArr[0] >= 0 && tileArr[1] >= 0) {
-          var loc = tileArr[0] + '/' + tileArr[1] + '/' + zoom
-          var tileName = type + '/' + loc;
-          visTilesMap[loc] = true;
+          var tileName = type + '/' + tileArr[0] + '/' + tileArr[1] + '/' + zoom;
+          visTilesMap[tileName] = true;
           var divName = "#" + tileName;
           if($(divName).length == 0) {
             var url = Drupal.settings.basePath + "?q=tiles";
@@ -217,9 +215,18 @@
           }
         }
       }
+      
+      $("#map_viewport img").each(function(i) {
+        if($(this).hasClass(type)) {
+          var id = this.attr('id');
+          if(visTilesMap(id) != true) {
+            $(this).remove();
+          }
+        }
+      });
     }
-
-    function clearTiles(type) {
+    
+    function clearAllTiles(type) {
       $("#map_viewport img").each(function(i) {
         if($(this).hasClass(type)) {
           $(this).remove();
