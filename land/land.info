@@ -4,4 +4,3 @@ description = Provides functions and allocates land to players in a round
 core = 7.x
 package = "Game"
 dependencies[] = game
-files[] = land.module
