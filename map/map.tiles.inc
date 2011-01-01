@@ -1,68 +1,76 @@
 <?php
 
-function map_tile_handler($x, $y, $z, $type) {
+function map_tile_handler() {
   // Set up initial variables.
   $tile_size = variable_get('map_tile_size');
   $min = variable_get('map_min_size');
   $max = variable_get('map_max_size');
-  
-  // Set the content type of the output.
-  drupal_add_http_header('Content-Type', 'image/png');
 
+  $data = array(
+    'x' => $_GET['x'],
+    'y' => $_GET['y'],
+    'z' => $_GET['z'],
+    'type' => $_GET['type'],
+  );
+
+  if(!is_numeric($data['x']) || !is_numeric($data['y']) || !is_numeric($data['z'])) {
+    $type = 'transparent';
+  }
+  
   // Check to ensure that the requested tile is within bounds. If not, then
   // change the tile to a transparent tile.
   $max_tiles = $max/pow(2, $z);
-  if($x < 0 || $y < 0 || $z < 0 || $x > $max_tiles || $y > $max_tiles || $z > 9) {
+  if($data['x'] < 0 || $data['y'] < 0 || $data['z'] < 0 || $data['x'] > $max_tiles || $data['y'] > $max_tiles || $data['z'] > 9) {
     $type = 'transparent';
   }
 
   // Check to see if the tile generator exists. If not, then change the tile to
   // a transparent tile.
-  $function = 'map_'.$type.'_tile_generate';
+  $function = 'map_'.$data['type'].'_tile_generate';
   if(!is_callable($function)) {
-    $type = 'transparent';
-    $function = 'map_'.$type.'_tile_generate';
+    $data['type'] = 'transparent';
+    $function = 'map_'.$data['type'].'_tile_generate';
   }
 
   // Determine the unique string identifier for the current tile.
-  $cache_string = 'map_'.$type.'_tile_';
-  if($type == 'base') {
-    $cache_string .= $z;
-  } elseif($type == 'transparent') {
+  $cache_string = 'map_'.$data['type'].'_tile_';
+  if($data['type'] == 'base') {
+    $cache_string .= $data['z'];
+  } elseif($data['type'] == 'transparent') {
     $cache_string .= $tile_size;
   }
 
   // Check to see if the tile is cached. If it is, print it and stop script. If
   // not, then go ahead and generate it, then cache it.
   if($cache = cache_get($cache_string) && !empty($cache->data)) {
-    print(base64_decode($cache->data));
-    return;
-  }
+    $data = $cache->data;
+  } else {
+    $data['left'] = $data['x'] * $tile_size;
+    $data['top'] = $data['y'] * $tile_size;
+    $data['tileName'] = $data['type']. '/' . $data['x'] . '/' . $data['y'] . '/'. $data['z'];
 
-  $tile = call_user_func($function, $x, $y, $z, $tile_size);
-  map_tile_cache($tile, $cache_string);
-  imagepng($tile);
-  drupal_exit();
+    $data['img'] = array(
+      'class' => $data['type'],
+      'style' => 'position: absolute; left: ' . $data['left'] . 'px; top: ' . $data['top'] . 'px;',
+      'id' => $data['tileName'],
+    );
+    $data['img']['src'] = call_user_func($function, $data, $tile_size);
+    $data['html'] = '<img ';
+    foreach($data['img'] as $attribute => $value) {
+      $data['html'] .= $attribute . '="' . $value. '" ';
+    }
+    $data['html'] .= '/>';
+    cache_set($cache_string, $data);
+  }
+  return drupal_json_output($data);
 }
 
-function map_base_tile_generate($x, $y, $z, $tile_size) {
-  $tiles_path = drupal_get_path('module', 'map').'/tiles/';
-  $base = imagecreatefrompng($tiles_path.'grass.png');
-  $tile = imagecreatetruecolor($tile_size,$tile_size);
-  if(imagesx($base) != $tile_size || imagesy($base) != $tile_size) {
-    $x = rand(0, imagesx($base)-$tile_size-1);
-    $y = rand(0, imagesy($base)-$tile_size-1);
-    imagecopyresampled($tile, $base, 0, 0, $x, $y, $tile_size, $tile_size, $tile_size, $tile_size);
-  }
-  return $tile;
+function map_base_tile_generate($data, $tile_size) {
+  return drupal_get_path('module', 'map').'/tiles/grass.png';
 }
 
-function map_transparent_tile_generate($x, $y, $z, $tile_size) {
-  $tile = imagecreatetruecolor($tile_size, $tile_size);
-  imagesavealpha($tile, TRUE);
-  $trans_colour = imagecolorallocatealpha($tile, 0, 0, 0, 127);
-  imagefill($tile, 0, 0, $trans_colour);
-  return $tile;
+function map_transparent_tile_generate($data, $tile_size) {
+  return TRUE;
 }
 
 function map_tile_click($x, $y) {
@@ -71,12 +79,3 @@ function map_tile_click($x, $y) {
   echo t('Map click on (:x,:y).', array(':x' => $x, ':y' => $y));
   die();
 }
-
-function map_tile_cache($tile_resource, $cache_name) {
-  ob_start();
-  imagepng($tile_resource);
-  $tile_content = ob_get_contents();
-  ob_end_clean();
-  cache_set($cache_name, chunk_split(base64_encode($tile_content)));
-}
-

@@ -53,6 +53,14 @@ function map_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'map.tiles.inc',
   );
+  $items['tiles'] = array(
+    'title' => 'Viewing tile',
+    'description' => 'Visual representation of tiles.',
+    'page callback' => 'map_tile_handler',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'map.tiles.inc',
+  );
   $items['map_click/%/%'] = array(
     'title' => 'Viewing information',
     'description' => 'Textual representation of tiles.',

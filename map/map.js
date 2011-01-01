@@ -210,15 +210,10 @@
           visTilesMap[loc] = true;
           var divName = "#" + tileName;
           if($(divName).length == 0) {
-            var url = Drupal.settings.basePath + "?q=" + tileName;
-            var left = (tileArr[0] * tileSize) + "px";
-            var top = (tileArr[1] * tileSize) + "px";
-            var element = $(document.createElement("img")).attr("id", tileName).attr("src", url).attr("class", type);
-            element.css({"position" : "absolute", "left" : left, "top" : top});
-            if(type == "overlay") {
-              element.css("z-index", 5);
-            }
-            element.appendTo("#map_viewport");
+            var url = Drupal.settings.basePath + "?q=tiles";
+            $.getJSON(url, {x:tileArr[0], y: tileArr[1], z: zoom, type: type}, function(data) {
+              viewport.append(data.html);
+            }, "json");
           }
         }
       }
