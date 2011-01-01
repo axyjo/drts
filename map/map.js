@@ -235,6 +235,7 @@
     function resize() {
       viewport.width($(window).width());
       viewport.height($(window).height()-Drupal.toolbar.height());
+      checkAllLayers();
     }
     resize();
     $(window).resize(resize);
