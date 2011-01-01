@@ -13,7 +13,7 @@
     var totalSize;
     var border_cache = 2;
     // This is the minimum pixel distance for inertial dragging to work.
-    var minDistance = 40;
+    var minDistance = tileSize*3;
     // By storing the look-ups in a variable, we may be able to squeeze some
     // extra performance as it saves the browser from having to look up each div
     // every single time we want to perform an action on it.
