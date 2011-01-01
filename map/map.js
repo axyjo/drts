@@ -157,8 +157,7 @@
         top = (-1*totalSize)+viewport.height();
       }
 
-      viewport.css("top", top+"px");
-      viewport.css("left", left+"px");
+      viewport.offset({top: top, left: left});
       // Performance tweak: don't checkAllTiles() here. Instead, check it after
       // the mouse is let go. Downside: less instantaneous loading, but this can
       // be fixed using liberal prefetch options and display gimmics down the
