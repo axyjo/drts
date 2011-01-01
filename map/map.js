@@ -240,7 +240,7 @@
 
     function resize() {
       viewport.width($(window).width());
-      viewport.height($(window).height());
+      viewport.height($(window).height()-Drupal.toolbar.height());
     }
     resize();
     $(window).resize(resize);
