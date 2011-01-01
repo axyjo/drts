@@ -12,7 +12,7 @@ function map_display() {
   drupal_add_js(drupal_get_path('module', 'map').'/map.js');
 
   // Pass Javascript variables.
-  $settings['map_size'] = variable_get('map_max_size');
+  $settings['map_size'] = 1024;
   $settings['tile_size'] = variable_get('map_tile_size');
   $settings['defaultx'] = variable_get('map_default_x');
   $settings['defaulty'] = variable_get('map_default_y');
@@ -34,15 +34,6 @@ function map_menu() {
     'description' => 'View map.',
     'page callback' => 'map_display',
     'access arguments' => array(1),
-  );
-  $items['admin/config/game/map'] = array(
-    'title' => 'Map',
-    'description' => 'Change settings for the map module.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('map_admin_settings_form'),
-    'access arguments' => array('administer game'),
-    'type' => MENU_LOCAL_TASK,
-    'file' => 'map.admin.inc',
   );
   $items['base/%/%/%'] = array(
     'title' => 'Viewing tile',
