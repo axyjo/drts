@@ -344,7 +344,6 @@
       $("#map_position").offset({left:0, top:$(window).height()-20});
       checkAllLayers();
     }
-    window.setTimeout(resize, 100);
     $(window).resize(resize);
     
     throbber.hide();
