@@ -1,0 +1,51 @@
+<?php
+
+function html5cache_menu() {
+    $items['cache.manifest'] = array(
+      'description' => 'Cache manifest.',
+      'page callback' => 'html5cache_manifest',
+      'access arguments' => array(1),
+      'type' => MENU_CALLBACK,
+    );
+    return $items;
+}
+
+function html5cache_init() {
+  drupal_add_js('(function ($) { $("html").attr("manifest", Drupal.settings.basePath + "cache.manifest"); })(jQuery);');
+}
+
+function html5cache_manifest() {
+  $paths = array();
+  
+  // Firstly, cache all explicitly defined objects.
+  $paths = module_invoke_all('cache');
+
+  // Cache libraries.
+  $modules = module_implements('library');
+  foreach($modules as $module) {
+    $libraries = drupal_get_library($module);
+    foreach($libraries as $library) {
+      if(is_array($library['css'])) {
+        foreach($library['css'] as $path => $options) {
+          $paths[] = $path;
+        }
+      }
+      if(is_array($library['js'])) {
+        foreach($library['js'] as $path => $options) {
+          $paths[] = $path;
+        }
+      }
+    }
+  }
+  
+  // Now, build the page.
+  header('Content-type: text/cache-manifest');
+  echo("CACHE MANIFEST\n");
+  echo("CACHE:\n");
+  foreach($paths as $path) {
+    echo $path."\n";
+  }
+  echo("NETWORK:\n");
+  echo("*\n");
+  drupal_exit();
+}

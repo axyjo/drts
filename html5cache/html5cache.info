@@ -1,0 +1,4 @@
+name = HTML 5 Cache
+description = Provides an HTML 5 cache through the use of a cache manifest. Before enabling, make sure that the path to the cache manifest file is set in your theme.
+core = 7.x
+package = "Game"
