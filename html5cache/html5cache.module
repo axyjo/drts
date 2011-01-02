@@ -39,7 +39,7 @@ function html5cache_manifest() {
       }
     }
   }
-  
+
   // Now, build the page.
   header('Content-type: text/cache-manifest');
   echo("CACHE MANIFEST\n");
