@@ -287,7 +287,7 @@
       for(var i = 0; i < visTiles.length; i++) {
         var tileArr = visTiles[i];
         if(tileArr[0] >= 0 && tileArr[1] >= 0) {
-          var tileName = type + '/' + tileArr[0] + '/' + tileArr[1] + '/' + zoom;
+          var tileName = type + '-' + tileArr[0] + '-' + tileArr[1] + '-' + zoom;
           visTilesMap[tileName] = true;
           var divName = "#" + tileName;
           if($(divName).length == 0) {

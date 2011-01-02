@@ -8,7 +8,7 @@ function map_tile_handler() {
   $return = array();
   
   foreach($_GET['tiles'] as $tile) {
-    $pieces = explode('/', $tile);
+    $pieces = explode('-', $tile);
     $data = array(
       'x' => $pieces[1],
       'y' => $pieces[2],
@@ -50,7 +50,7 @@ function map_tile_handler() {
     } else {
       $data['left'] = $data['x'] * $tile_size;
       $data['top'] = $data['y'] * $tile_size;
-      $data['tileName'] = $data['type']. '/' . $data['x'] . '/' . $data['y'] . '/'. $data['z'];
+      $data['tileName'] = $data['type'] . '-' . $data['x'] . '-' . $data['y'] . '-'. $data['z'];
 
       $data['img'] = array(
         'class' => $data['type'],
