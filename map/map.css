@@ -1,7 +1,3 @@
-.section {
-  margin: 0 !important;
-}
-
 #map {
   position:absolute;
   left:0; top:0;
