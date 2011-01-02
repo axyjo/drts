@@ -10,10 +10,6 @@ function html5cache_menu() {
     return $items;
 }
 
-function html5cache_init() {
-  drupal_add_js('(function ($) { $("html").attr("manifest", Drupal.settings.basePath + "cache.manifest"); })(jQuery);');
-}
-
 function html5cache_manifest() {
   $paths = array();
   
@@ -47,5 +43,6 @@ function html5cache_manifest() {
   }
   echo("NETWORK:\n");
   echo("*\n");
+  echo("game\n");
   drupal_exit();
 }
