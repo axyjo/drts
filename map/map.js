@@ -60,10 +60,12 @@
 
     map.bind("mousemove", function(e) {
       var mouseEvents = map.data("mouseEvents");
-      if (e.timeStamp - mouseEvents[mouseEvents.length-1].timeStamp > 40) {
-        mouseEvents.push(e);
-        if (mouseEvents.length > 2) {
-          mouseEvents.shift();
+      if(mouseEvents != undefined) {
+        if (e.timeStamp - mouseEvents[mouseEvents.length-1].timeStamp > 40) {
+          mouseEvents.push(e);
+          if (mouseEvents.length > 2) {
+            mouseEvents.shift();
+          }
         }
       }
       if(dragging) {
