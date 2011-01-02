@@ -59,15 +59,14 @@
     });
 
     map.bind("mousemove", function(e) {
-      if(dragging) {
-        var mouseEvents = map.data("mouseEvents");
-        if (e.timeStamp - mouseEvents[mouseEvents.length-1].timeStamp > 40) {
-          mouseEvents.push(e);
-          if (mouseEvents.length > 2) {
-            mouseEvents.shift();
-          }
+      var mouseEvents = map.data("mouseEvents");
+      if (e.timeStamp - mouseEvents[mouseEvents.length-1].timeStamp > 40) {
+        mouseEvents.push(e);
+        if (mouseEvents.length > 2) {
+          mouseEvents.shift();
         }
-
+      }
+      if(dragging) {
         var new_left = left + (e.clientX - dragStartLeft);
         var new_top = top + (e.clientY - dragStartTop);
         viewport_safe_move(new_left, new_top);
