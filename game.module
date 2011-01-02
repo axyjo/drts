@@ -25,6 +25,14 @@ function game_library() {
         ),
       ),
     ),
+    'jquery_hotkeys' => array(
+      'title' => 'jQuery Hotkeys',
+      'website' => 'https://github.com/tzuryby/jquery.hotkeys/',
+      'version' => '1.4.2',
+      'js' => array(
+        drupal_get_path('module', 'game') . '/jquery.hotkeys.js' => array(),
+      ),
+    ),
   );
 }
 
