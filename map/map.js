@@ -283,6 +283,7 @@
     function checkLayers(type) {
       var visTiles = getVisibleTiles();
       var visTilesMap = {};
+      var fetchTiles = new Array();
       for(var i = 0; i < visTiles.length; i++) {
         var tileArr = visTiles[i];
         if(tileArr[0] >= 0 && tileArr[1] >= 0) {
@@ -291,19 +292,32 @@
           var divName = "#" + tileName;
           if($(divName).length == 0) {
             var cached = viewport.data(tileName);
-            if(cached != undefined) {
+            if(cached != undefined && cached.html != undefined) {
               viewport.append(cached.html);
             } else {
-              var url = Drupal.settings.basePath + "?q=tiles";
-              $.getJSON(url, {x:tileArr[0], y: tileArr[1], z: zoom, type: type}, function(data) {
-                if(data != undefined && data.html != undefined) {
-                  viewport.append(data.html);
-                  viewport.data(tileName, data);
-                }
-              }, "json");
+              fetchTiles.push(tileName);
             }
           }
         }
+      }
+      
+      var url = Drupal.settings.basePath + "?q=tiles";
+      var fetch = false;
+      for(var tile in fetchTiles) {
+        url = url + "&tiles[]=" + encodeURIComponent(fetchTiles[tile]);
+        fetch = true;
+      }
+      if(fetch) {
+        $.getJSON(url, function(data) {
+          if(data != undefined) {
+            $.each(data, function(index, value) {
+              if(value != undefined && value.html != undefined) {
+                viewport.append(value.html);
+                viewport.data(index, tile);
+              }
+            });
+          }
+        }, "json");
       }
       
       $("#map_viewport img").each(function(i) {
