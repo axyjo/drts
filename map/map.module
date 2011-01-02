@@ -8,6 +8,7 @@ function map_display() {
 
   // Only add CSS and Javascript on the map_display() page.
   drupal_add_library('game', 'css_reset');
+  drupal_add_library('game', 'jquery_hotkeys');
   drupal_add_css(drupal_get_path('module', 'map').'/map.css', array('media'=>'screen'));
   drupal_add_js(drupal_get_path('module', 'map').'/map.js');
 

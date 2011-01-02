@@ -211,14 +211,16 @@
       window.setTimeout(resize, 100);
     }
 
-    function pan(delta_x, delta_y, e) {
-      var x = viewport.offset().left-delta_x;
-      var y = viewport.offset().top-delta_y;
-      viewport_safe_move(x, y);
-      updatePosition(e);
+    // Positive values for delta_x move left and positive values for delta_y
+    // move up.
+    function pan(delta_x, delta_y) {
+      var x = viewport.offset().left+delta_x;
+      var y = viewport.offset().top+delta_y;
+      viewport_safe_move(x, y, true);
+      checkAllLayers();
     }
 
-    function viewport_safe_move(left, top) {
+    function viewport_safe_move(left, top, animate) {
       if(left > 0) {
         left = 0;
       } else if(left < (-1*totalSize)+viewport.width()) {
@@ -231,7 +233,11 @@
         top = (-1*totalSize)+viewport.height();
       }
 
-      viewport.offset({top: top, left: left});
+      if(animate != undefined) {
+        viewport.animate({top: top, left: left});
+      } else {
+        viewport.offset({top: top, left: left});
+      }
       // Performance tweak: don't checkAllTiles() here. Instead, check it after
       // the mouse is let go. Downside: less instantaneous loading, but this can
       // be fixed using liberal prefetch options and display gimmics down the
@@ -330,6 +336,14 @@
     throbber.hide();
     checkLock = false;
     setZoom(zoom);
+
+    $(document).bind('keydown', 'up', function() {pan(0, 100);});
+    $(document).bind('keydown', 'down', function() {pan(0, -100);});
+    $(document).bind('keydown', 'left', function() {pan(100, 0);});
+    $(document).bind('keydown', 'right', function() {pan(-100, 0);});
+    
+    $(document).bind('keydown', '+', function() {setZoom(zoom--);});
+    $(document).bind('keydown', '-', function() {setZoom(zoom++);});
 
   });
 })(jQuery);
