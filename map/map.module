@@ -43,6 +43,10 @@ function map_get_tile_paths() {
   return $return;
 }
 
+function map_cache() {
+  return map_get_tile_paths();
+}
+
 function map_menu() {
   $items['game'] = array(
     'description' => 'View map.',
