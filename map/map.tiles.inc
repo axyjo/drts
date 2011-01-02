@@ -6,7 +6,7 @@ function map_tile_handler() {
   $min = variable_get('map_min_size');
   $max = variable_get('map_max_size');
   $return = array();
-  
+
   foreach($_GET['tiles'] as $tile) {
     $pieces = explode('-', $tile);
     $data = array(

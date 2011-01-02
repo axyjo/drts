@@ -1,15 +1,25 @@
 #map {
   position:absolute;
   left:0; top:0;
-  width: auto;
-  height: auto;
-  margin:auto;
   overflow: hidden;
   background-color: #F4F0EC;
+  z-index: -10;
 }
 
 #map_data {
-  float:left;
+  position:absolute;
+  min-width: 225px;
+  max-width: 225px;
+  overflow: auto;
+  background-color: #000;
+  color: #FFF;
+  font-size: .846em;
+  font: normal small "Lucida Grande", Verdana, sans-serif;
+  box-shadow: 3px 0 20px #000;
+  -moz-box-shadow: 3px 0 20px #000;
+  -webkit-box-shadow: 3px 0 20px #000;
+  filter: progid:DXImageTransform.Microsoft.Shadow(color=#000000, direction='180', strength='10');
+  -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(color=#000000, direction='180', strength='10')";
 }
 
 .throbber {
@@ -21,18 +31,20 @@
   color: #222;
   padding: 5px 5px 5px 5px;
   font-size: .846em;
+  font: normal small "Lucida Grande", Verdana, sans-serif;
 }
 
 #map_bar {
   color: #222;
   background-color: #FFFDD0;
+  border: 1px #000 solid;
   z-index: 2000;
   position: absolute;
   top: 645px;
-  float:left;
-  min-width: 80px;
+  min-width: 90px;
   min-height: 25px;
-  
+  border-bottom-right-radius: 30%;
+  border-top-right-radius: 30%;
   -moz-border-bottom-right-radius: 30%;
   -moz-border-top-right-radius: 30%;
   -webkit-border-bottom-right-radius: 30%;
@@ -43,5 +55,6 @@
   left: 0px;
   top: 0px;
   position: relative;
+  float:right;
 }
 

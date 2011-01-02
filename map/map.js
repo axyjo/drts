@@ -20,6 +20,7 @@
     var throbber = $("#map_bar .throbber");
     var viewport = $("#map_viewport");
     var map = $("#map");
+    var databar = $("#map_data");
     // Store the hover/click request in a variable so that it can be easily
     // aborted.
     var ajax_request;
@@ -210,6 +211,7 @@
       }
       resize();
       window.setTimeout(resize, 100);
+      window.setTimeout(resize, 200);
     }
 
     // Positive values for delta_x move left and positive values for delta_y
@@ -310,7 +312,7 @@
           }
         }
       }
-      
+
       var url = Drupal.settings.basePath + "?q=tiles";
       var fetch = false;
       for(var tile in fetchTiles) {
@@ -350,9 +352,14 @@
     }
 
     function resize() {
-      viewport.width($(window).width());
-      viewport.height($(window).height()-Drupal.toolbar.height());
-      $("#map_bar").offset({left:0, top:$(window).height()-30});
+      var toolbar = Drupal.toolbar.height();
+      viewport.width($(window).width()-databar.width());
+      viewport.height($(window).height() - toolbar);
+      map.offset({left: $(window).width() - viewport.width(), top: toolbar});
+      databar.offset({top: toolbar});
+      databar.height(viewport.height());
+      databar.width($(window).width() - viewport.width());
+      $("#map_bar").offset({left:databar.width(), top:$(window).height() - 30});
       checkAllLayers();
     }
     $(window).resize(resize);
