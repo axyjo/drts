@@ -11,7 +11,7 @@
     var dragStartLeft;
     var zoom = Drupal.settings.defaultz;
     var totalSize;
-    var border_cache = 2;
+    var border_cache = 4;
     // This is the minimum pixel distance for inertial dragging to work.
     var minDistance = tileSize*3;
     // By storing the look-ups in a variable, we may be able to squeeze some
