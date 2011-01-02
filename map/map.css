@@ -31,12 +31,14 @@
 }
 
 #map_position {
-  color: #DDD;
+  color: #222;
+  background-color: #FFFDD0;
   z-index: 2000;
   position: absolute;
   top: 645px;
-  padding-left: 5px;
-  display:none;
+  left: 0px;
+  padding-left: 3px;
+  padding-right: 3px;
 }
 
 #map_viewport {

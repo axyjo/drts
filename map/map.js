@@ -68,9 +68,8 @@
         var new_left = left + (e.clientX - dragStartLeft);
         var new_top = top + (e.clientY - dragStartTop);
         viewport_safe_move(new_left, new_top);
-      } else {
-        var pos = updatePosition(e);
       }
+      var pos = updatePosition(e);
     });
 
     // Instead of binding the mouseup event to the map, bind it to the document
@@ -135,6 +134,7 @@
         });
       }
 
+      updatePosition(e);
       viewport.css("cursor", "");
       checkAllLayers();
     });
@@ -316,6 +316,7 @@
     function resize() {
       viewport.width($(window).width());
       viewport.height($(window).height()-Drupal.toolbar.height());
+      $("#map_position").offset({left:0, top:$(window).height()-20});
       checkAllLayers();
     }
     window.setTimeout(resize, 100);
