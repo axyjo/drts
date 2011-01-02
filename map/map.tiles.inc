@@ -81,7 +81,6 @@ function map_transparent_tile_generate($data, $tile_size) {
 
 function map_tile_click($x, $y) {
   module_invoke_all('click_map', $x, $y);
-  // TODO: Fix the following and change it to the "Drupal way."
-  echo t('Map click on (:x,:y).', array(':x' => $x, ':y' => $y));
-  die();
+  echo('Map click on ('.$x.', '.$y.').');
+  drupal_exit();
 }
