@@ -23,6 +23,9 @@
     // Store the hover/click request in a variable so that it can be easily
     // aborted.
     var ajax_request;
+    // Lock for the checkAllLayers() function so that we don't check too many
+    // times on page load.
+    var checkLock = true;
     
     // Preload and cache tile images by adding them to a hidden element.
     var cache = $('body').append('<div id="cache" style="display:none/>').children('#cache');
@@ -266,7 +269,9 @@
     }
 
     function checkAllLayers() {
-      checkLayers("base");
+      if(!checkLock) {
+        checkLayers("base");
+      }
     }
 
     function checkLayers(type) {
@@ -322,7 +327,8 @@
     window.setTimeout(resize, 100);
     $(window).resize(resize);
     
-    throbber.hide();  
+    throbber.hide();
+    checkLock = false;
     setZoom(zoom);
 
   });
