@@ -17,7 +17,7 @@
     // By storing the look-ups in a variable, we may be able to squeeze some
     // extra performance as it saves the browser from having to look up each div
     // every single time we want to perform an action on it.
-    var throbber = $("#throbber");
+    var throbber = $("#map_bar .throbber");
     var viewport = $("#map_viewport");
     var map = $("#map");
     // Store the hover/click request in a variable so that it can be easily
@@ -143,7 +143,7 @@
     });
 
     function data_request(type, pos) {
-      throbber.show();
+      throbberShow();
       if(pos.x > 0 && pos.y > 0 && pos.x <= mapSize && pos.y <= mapSize) {
         if(typeof ajax_request != 'undefined') ajax_request.abort();
         ajax_request = $.ajax({
@@ -154,7 +154,7 @@
           },
         });
       }
-      throbber.hide();
+      throbberHide();
     }
 
     function updatePosition(e) {
@@ -219,6 +219,14 @@
       viewport_safe_move(x, y, true);
       checkAllLayers();
     }
+    
+    function throbberShow() {
+      throbber.css("background-position-y", "-18px");
+    }
+    
+    function throbberHide() {
+      throbber.css("background-position-y", "2px");
+    }
 
     function viewport_safe_move(left, top, animate) {
       if(left > 0) {
@@ -281,6 +289,7 @@
     }
 
     function checkLayers(type) {
+      throbberShow();
       var visTiles = getVisibleTiles();
       var visTilesMap = {};
       var fetchTiles = new Array();
@@ -328,6 +337,7 @@
           }
         }
       });
+      throbberHide();
     }
     
     function clearAllTiles(type) {
@@ -341,12 +351,11 @@
     function resize() {
       viewport.width($(window).width());
       viewport.height($(window).height()-Drupal.toolbar.height());
-      $("#map_position").offset({left:0, top:$(window).height()-20});
+      $("#map_bar").offset({left:0, top:$(window).height()-30});
       checkAllLayers();
     }
     $(window).resize(resize);
-    
-    throbber.hide();
+
     checkLock = false;
     setZoom(zoom);
 
@@ -354,7 +363,7 @@
     $(document).bind('keydown', 'down', function() {pan(0, -100);});
     $(document).bind('keydown', 'left', function() {pan(100, 0);});
     $(document).bind('keydown', 'right', function() {pan(-100, 0);});
-    
+
     $(document).bind('keydown', '+', function() {setZoom(zoom--);});
     $(document).bind('keydown', '-', function() {setZoom(zoom++);});
 

@@ -10,6 +10,12 @@ function html5cache_menu() {
     return $items;
 }
 
+function html5cache_cache() {
+  return array(
+    'misc/throbber.gif',
+  );
+}
+
 function html5cache_manifest() {
   $paths = array();
   

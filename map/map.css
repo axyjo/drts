@@ -9,42 +9,43 @@
   height: auto;
   margin:auto;
   overflow: hidden;
-}
-
-#map_info {
-  width: 768px;
-  margin: auto;
-  height: 100px;
-  display:none;
-}
-
-#throbber {
-  background-image: url(../throbber-big.gif);
-  float: right;
-  width: 66px; height: 66px;
-  margin-top:17px; margin-right:10px;
-  background-repeat: no-repeat;
+  background-color: #F4F0EC;
 }
 
 #map_data {
   float:left;
 }
 
+.throbber {
+  float: right !important;
+  margin-top: -20px !important;
+}
+
 #map_position {
+  color: #222;
+  padding: 5px 5px 5px 5px;
+  font-size: .846em;
+}
+
+#map_bar {
   color: #222;
   background-color: #FFFDD0;
   z-index: 2000;
   position: absolute;
   top: 645px;
-  left: 0px;
-  padding-left: 3px;
-  padding-right: 3px;
+  float:left;
+  min-width: 80px;
+  min-height: 25px;
+  
+  -moz-border-bottom-right-radius: 30%;
+  -moz-border-top-right-radius: 30%;
+  -webkit-border-bottom-right-radius: 30%;
+  -webkit-border-top-right-radius: 30%;
 }
 
 #map_viewport {
   left: 0px;
   top: 0px;
   position: relative;
-  background-color: #F4F0EC;
 }
 
