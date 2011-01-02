@@ -313,7 +313,7 @@
             $.each(data, function(index, value) {
               if(value != undefined && value.html != undefined) {
                 viewport.append(value.html);
-                viewport.data(index, tile);
+                viewport.data(index, value);
               }
             });
           }
