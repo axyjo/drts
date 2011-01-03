@@ -25,12 +25,6 @@
     // Lock for the checkAllLayers() function so that we don't check too many
     // times on page load.
     var checkLock = true;
-    
-    // Preload and cache tile images by adding them to a hidden element.
-    var cache = $('body').append('<div id="cache" style="display:none/>').children('#cache');
-    $.each(Drupal.settings.precache, function (i, val) {
-      $('<img/>').attr('src', val).appendTo(cache);
-    });
 
     map.bind("click", function(e) {
       var pos = getPosition(e);
