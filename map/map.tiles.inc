@@ -53,7 +53,7 @@ function map_tile_handler() {
       $data['tileName'] = $data['type'] . '-' . $data['x'] . '-' . $data['y'] . '-'. $data['z'];
 
       $data['img'] = array(
-        'class' => $data['type'],
+        'class' => $data['type'] . ' map_tiles',
         'style' => 'position: absolute; left: ' . $data['left'] . 'px; top: ' . $data['top'] . 'px;',
         'id' => $data['tileName'],
       );
