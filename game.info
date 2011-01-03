@@ -3,4 +3,4 @@ description = Provides helper functions and a dedicated game queue.
 core = 7.x
 package = "Game"
 files[] = game.test
-
+scripts[] = game.js
