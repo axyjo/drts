@@ -1,5 +1,5 @@
 (function ($) {
-  
+
 Drupal.game.map = Drupal.game.map || {};
 
 Drupal.behaviors.game = {
@@ -9,19 +9,18 @@ Drupal.behaviors.game = {
   }
 };
 
-Drupal.game.map.zoom = undefined;
-
 Drupal.game.map.init = function() {
+  Drupal.game.map.layers.checkLock = true;
   Drupal.game.map.tileSize = Drupal.settings.tile_size;
   Drupal.game.map.mapSize = Drupal.settings.map_size;
   Drupal.game.map.borderCache = Drupal.settings.border_cache;
   Drupal.game.map.layers.tilesets = Drupal.settings.tilesets;
-  $(document).ready(function() {
-    Drupal.game.map.events.init();
-    Drupal.game.map.resetZoom();
-    $(window).triggerHandler('resize');
-    window.setTimeout(Drupal.game.map.events.resize, '1');
-  });
+  Drupal.game.map.events.init();
+  Drupal.game.map.resetZoom();
+  $(window).triggerHandler('resize');
+  Drupal.game.map.layers.checkLock = false;
+  window.setTimeout(Drupal.game.map.events.resize, '1');
+  Drupal.game.map.layers.checkAll();
 }
 
 Drupal.game.map.coordinateLength = function() {
