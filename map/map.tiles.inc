@@ -3,7 +3,6 @@
 function map_tile_handler() {
   // Set up initial variables.
   $tile_size = variable_get('map_tile_size');
-  $min = variable_get('map_min_size');
   $max = variable_get('map_max_size');
   $return = array();
 
@@ -22,9 +21,9 @@ function map_tile_handler() {
   
     // Check to ensure that the requested tile is within bounds. If not, then
     // change the tile to a transparent tile.
-    $max_tiles = $max/pow(2, $z);
-    if($data['x'] < 0 || $data['y'] < 0 || $data['z'] < 0 || $data['x'] > $max_tiles || $data['y'] > $max_tiles || $data['z'] > 9) {
-      $type = 'transparent';
+    $max_tiles = $max*pow(2, $data['z'])/$tile_size;
+    if($data['x'] < 0 || $data['y'] < 0 || $data['z'] < 0 || $data['x'] >= $max_tiles || $data['y'] >= $max_tiles || $data['z'] > 9) {
+      $data['type'] = 'transparent';
     }
 
     // Check to see if the tile generator exists. If not, then change the tile to
@@ -36,12 +35,8 @@ function map_tile_handler() {
     }
 
     // Determine the unique string identifier for the current tile.
-    $cache_string = 'map_'.$data['type'].'_tile_';
-    if($data['type'] == 'base') {
-      $cache_string .= $data['z'];
-    } elseif($data['type'] == 'transparent') {
-      $cache_string .= $tile_size;
-    }
+    $data['tileName'] = $data['type'] . '-' . $data['x'] . '-' . $data['y'] . '-'. $data['z'];
+    $cache_string = 'map_'.$data['type'].'_tile_'.$data['tileName'];
 
     // Check to see if the tile is cached. If it is, print it and stop script. If
     // not, then go ahead and generate it, then cache it.
@@ -50,14 +45,15 @@ function map_tile_handler() {
     } else {
       $data['left'] = $data['x'] * $tile_size;
       $data['top'] = $data['y'] * $tile_size;
-      $data['tileName'] = $data['type'] . '-' . $data['x'] . '-' . $data['y'] . '-'. $data['z'];
 
       $data['img'] = array(
         'class' => $data['type'] . ' map_tiles',
         'style' => 'position: absolute; left: ' . $data['left'] . 'px; top: ' . $data['top'] . 'px;',
         'id' => $data['tileName'],
       );
-      $data['img']['src'] = call_user_func($function, $data, $tile_size);
+      if($src = call_user_func($function, $data, $tile_size)) {
+        $data['img']['src'] = $src;
+      }
       $data['html'] = '<img ';
       foreach($data['img'] as $attribute => $value) {
         $data['html'] .= $attribute . '="' . $value. '" ';
@@ -76,7 +72,7 @@ function map_base_tile_generate($data, $tile_size) {
 }
 
 function map_transparent_tile_generate($data, $tile_size) {
-  return TRUE;
+  return FALSE;
 }
 
 function map_tile_click($x, $y) {
