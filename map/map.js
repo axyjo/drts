@@ -12,13 +12,7 @@
     var zoom = Drupal.settings.defaultz;
     var totalSize;
     var border_cache = 4;
-    // By storing the look-ups in a variable, we may be able to squeeze some
-    // extra performance as it saves the browser from having to look up each div
-    // every single time we want to perform an action on it.
     var throbber = $("#map_bar .throbber");
-    var viewport = $("#map_viewport");
-    var map = $("#map");
-    var databar = $("#map_data");
     // Store the hover/click request in a variable so that it can be easily
     // aborted.
     var ajax_request;
@@ -26,23 +20,23 @@
     // times on page load.
     var checkLock = true;
 
-    map.bind("click", function(e) {
+    $("#map").bind("click", function(e) {
       var pos = getPosition(e);
       data_request("click", pos);
     });
 
-    map.bind("dblclick", function(e) {
+    $("#map").bind("dblclick", function(e) {
       zoom--;
       setZoom(zoom, e);
     });
 
-    map.bind("mousedown", function(e) {
+    $("#map").bind("mousedown", function(e) {
       dragStartLeft = e.clientX;
       dragStartTop = e.clientY;
-      viewport.css("cursor" , "move");
+      $("#map_viewport").css("cursor" , "move");
 
-      top = viewport.offset().top;
-      left = viewport.offset().left;
+      top = $("#map_viewport").offset().top;
+      left = $("#map_viewport").offset().left;
 
       dragging = true;
       // The following return statement exists in order to prevent the user's
@@ -50,7 +44,7 @@
       return false;
     });
 
-    map.bind("mousemove", function(e) {
+    $("#map").bind("mousemove", function(e) {
       if(dragging) {
         var new_left = left + (e.clientX - dragStartLeft);
         var new_top = top + (e.clientY - dragStartTop);
@@ -66,7 +60,7 @@
     $(document).bind("mouseup", function(e) {
       dragging = false;
       updatePosition(e);
-      viewport.css("cursor", "");
+      $("#map_viewport").css("cursor", "");
       checkAllLayers();
     });
 
@@ -94,12 +88,12 @@
     function getPosition(e) {
       // The offset function returns the distance from the edge of the page to
       // the edge of the map div.
-      var offset = map.offset();
+      var offset = $("#map").offset();
 
       // Set x_val and y_val equal to the distance from the top-left of the
       // image layer.
-      var x_val = e.pageX - offset.left + Math.abs(viewport.offset().left);
-      var y_val = e.pageY - offset.top + Math.abs(viewport.offset().top);
+      var x_val = e.pageX - offset.left + Math.abs($("#map_viewport").offset().left);
+      var y_val = e.pageY - offset.top + Math.abs($("#map_viewport").offset().top);
 
       // Change x_val and y_val such that the script takes into consideration
       // the current zoom level and the tile size. First, divide by tile size to
@@ -130,8 +124,8 @@
       }
       zoom = z;
       totalSize = tileSize*mapSize/resolutions[zoom];
-      viewport.width(totalSize);
-      viewport.height(totalSize);
+      $("#map_viewport").width(totalSize);
+      $("#map_viewport").height(totalSize);
       if(typeof e  != 'undefined') {
         updatePosition(e);
       }
@@ -143,8 +137,8 @@
     // Positive values for delta_x move left and positive values for delta_y
     // move up.
     function pan(delta_x, delta_y) {
-      var x = viewport.offset().left+delta_x;
-      var y = viewport.offset().top+delta_y;
+      var x = $("#map_viewport").offset().left+delta_x;
+      var y = $("#map_viewport").offset().top+delta_y;
       viewport_safe_move(x, y, true);
       checkAllLayers();
     }
@@ -160,20 +154,20 @@
     function viewport_safe_move(left, top, animate) {
       if(left > 0) {
         left = 0;
-      } else if(left < (-1*totalSize)+viewport.width()) {
-        left = (-1*totalSize)+viewport.width();
+      } else if(left < (-1*totalSize)+$("#map_viewport").width()) {
+        left = (-1*totalSize)+$("#map_viewport").width();
       }
 
       if(top > 0) {
         top = 0;
-      } else if(top < (-1*totalSize)+viewport.height()) {
-        top = (-1*totalSize)+viewport.height();
+      } else if(top < (-1*totalSize)+$("#map_viewport").height()) {
+        top = (-1*totalSize)+$("#map_viewport").height();
       }
 
       if(animate != undefined) {
-        viewport.animate({top: top, left: left});
+        $("#map_viewport").animate({top: top, left: left});
       } else {
-        viewport.offset({top: top, left: left});
+        $("#map_viewport").offset({top: top, left: left});
       }
       // Performance tweak: don't checkAllTiles() here. Instead, check it after
       // the mouse is let go. Downside: less instantaneous loading, but this can
@@ -184,8 +178,8 @@
 
     function getVisibleTiles() {
       // Get the current offset from the 0, 0 position.
-      var mapX = viewport.offset().left;
-      var mapY = viewport.offset().top;
+      var mapX = $("#map_viewport").offset().left;
+      var mapY = $("#map_viewport").offset().top;
 
       // Get the first tile that should be visible. The border_cache variable
       // exists as the script should download border_cache tiles beyond the
@@ -196,8 +190,8 @@
       // Get the number of tiles that are completely visible. The border_cache
       // variable exists so that the script downloads partially visible tiles as
       // well. This value does not change unless the viewport size is changed.
-      var tilesX = Math.ceil(viewport.width() / tileSize) + border_cache;
-      var tilesY = Math.ceil(viewport.height() / tileSize) + border_cache;
+      var tilesX = Math.ceil($("#map_viewport").width() / tileSize) + border_cache;
+      var tilesY = Math.ceil($("#map_viewport").height() / tileSize) + border_cache;
 
       // Generate the list of visible tiles based on the above variables.
       var visibleTiles = [];
@@ -229,9 +223,9 @@
           visTilesMap[tileName] = true;
           var divName = "#" + tileName;
           if($(divName).length == 0) {
-            var cached = viewport.data(tileName);
+            var cached = $("#map_viewport").data(tileName);
             if(cached != undefined && cached.html != undefined) {
-              viewport.append(cached.html);
+              $("#map_viewport").append(cached.html);
             } else {
               fetchTiles.push(tileName);
             }
@@ -250,8 +244,8 @@
           if(data != undefined) {
             $.each(data, function(index, value) {
               if(value != undefined && value.html != undefined) {
-                viewport.append(value.html);
-                viewport.data(index, value);
+                $("#map_viewport").append(value.html);
+                $("#map_viewport").data(index, value);
               }
             });
           }
@@ -279,13 +273,13 @@
 
     function resize() {
       var toolbar = Drupal.toolbar.height();
-      viewport.width($(window).width()-databar.width());
-      viewport.height($(window).height() - toolbar);
-      map.offset({left: $(window).width() - viewport.width(), top: toolbar});
-      databar.offset({top: toolbar});
-      databar.height(viewport.height());
-      databar.width($(window).width() - viewport.width());
-      $("#map_bar").offset({left:databar.width(), top:$(window).height() - 30});
+      $("#map_viewport").width($(window).width()-$("#map_data").width());
+      $("#map_viewport").height($(window).height() - toolbar);
+      $("#map").offset({left: $(window).width() - $("#map_viewport").width(), top: toolbar});
+      $("#map_data").offset({top: toolbar});
+      $("#map_data").height($("#map_viewport").height());
+      $("#map_data").width($(window).width() - $("#map_viewport").width());
+      $("#map_bar").offset({left:$("#map_data").width(), top:$(window).height() - 30});
       checkAllLayers();
     }
     $(window).resize(resize);
