@@ -4,6 +4,11 @@
   // Lock for the checkAll() function so that we don't check too many times on
   // a particular event trigger.
 
+  Drupal.game.map.layers.init = function() {
+    Drupal.game.map.layers.checkLock = true;
+    Drupal.game.map.layers.tilesets = Drupal.settings.tilesets;
+  }
+
   Drupal.game.map.layers.checkAll = function() {
     if(!Drupal.game.map.layers.checkLock) {
       for(var i = 0; i < this.tilesets.length; i++) {
