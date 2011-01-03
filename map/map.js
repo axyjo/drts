@@ -45,6 +45,7 @@ Drupal.game.map.setZoom = function(z) {
   }
   this.zoom = z;
   var totalSize = this.mapSize* this.coordinateLength();
+  Drupal.game.map.maxTiles = this.mapSize*this.coordinateLength()/this.tileSize;
   $("#map_viewport").width(totalSize);
   $("#map_viewport").height(totalSize);
   this.layers.checkAll();
