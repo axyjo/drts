@@ -25,8 +25,7 @@
       var tileArr = visTiles[i];
       var tileName = type + '-' + tileArr.x + '-' + tileArr.y + '-' + Drupal.game.map.zoom;
       visTilesMap[tileName] = true;
-      var divName = "#" + tileName;
-      if($(divName).length == 0) {
+      if($("#" + tileName).length == 0) {
         var cached = $("#map_viewport").data(tileName);
         if(cached != undefined && cached.html != undefined) {
           $("#map_viewport").append(cached.html);
