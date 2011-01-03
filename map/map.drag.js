@@ -18,8 +18,11 @@
     this.dragEndLeft = e.clientX;
     this.dragEndTop = e.clientY;
     // Caculate change in position.
-    this.dragDeltaLeft = this.dragEndTop - this.dragStartTop;
+    this.dragDeltaLeft = this.dragEndLeft - this.dragStartLeft;
     this.dragDeltaTop = this.dragEndTop - this.dragStartTop;
+    // Reset the starting coordinates.
+    this.dragStartLeft = this.dragEndLeft;
+    this.dragStartTop = this.dragEndTop;
   }
 
   Drupal.game.map.drag.end = function() {
