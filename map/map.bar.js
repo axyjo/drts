@@ -18,6 +18,7 @@
         url: "?q=map_click/" + Math.floor(position.x) + '/' + Math.floor(position.y),
         success: function(data){
           $('#map_data').html(data);
+          $(window).triggerHandler('resize');
         },
       });
     }
