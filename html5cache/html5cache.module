@@ -18,9 +18,25 @@ function html5cache_cache() {
 
 function html5cache_manifest() {
   $paths = array();
-  
+
   // Firstly, cache all explicitly defined objects.
   $paths = module_invoke_all('cache');
+
+  // Cache Javascript added by modules.
+  $js = drupal_add_js();
+  foreach($js as $script) {
+    if($script['type'] == 'file') {
+      $paths[] = $script['data'];
+    }
+  }
+
+  // Cache Javascript added by modules.
+  $css = drupal_add_css();
+  foreach($css as $stylesheet) {
+    if($stylesheet['type'] == 'file') {
+      $paths[] = $stylesheet['data'];
+    }
+  }
 
   // Cache libraries.
   $modules = module_implements('library');
@@ -40,10 +56,11 @@ function html5cache_manifest() {
     }
   }
 
-  // Now, build the page.
+  // Now, build the page, returning only unique values.
   header('Content-type: text/cache-manifest');
   echo("CACHE MANIFEST\n");
   echo("CACHE:\n");
+  $paths = array_unique($paths);
   foreach($paths as $path) {
     echo $path."\n";
   }
