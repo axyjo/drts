@@ -25,20 +25,29 @@
   }
 
   Drupal.game.map.bar.position = function(e) {
-    // The offset function returns the distance from the edge of the page to
-    // the edge of the map div.
-    var offset = $("#map").offset();
+    // Caclulate the distance the viewport has been offset by to account for
+    // items to its left and top. We cannot simply subtract the viewport's
+    // width from the window's width (and the same for height), as then items
+    // to the right and top would be counted again, causing an over-correction.
+    var displacementX = $("#map_bar").width();
+    var displacementY = 0;
+    if(Drupal.toolbar != undefined) {
+      displacementY = Drupal.toolbar.height();
+    }
+
+    var offset = $("#map_viewport").offset();
+    // Using displacements from origin calculated above, change the values.
+    offset.left -= displacementX;
+    offset.top -= displacementY;
 
     // Set x_val and y_val equal to the distance from the top-left of the
     // image layer.
-    var x_val = e.pageX - offset.left + Math.abs(Drupal.game.map.viewport.left());
-    var y_val = e.pageY - offset.top + Math.abs(Drupal.game.map.viewport.top());
+    var x_val = e.pageX - displacementX - offset.left;
+    var y_val = e.pageY - displacementY - offset.top;
 
     // Change x_val and y_val such that the script takes into consideration
-    // the current zoom level and the tile size. First, divide by tile size to
-    // convert from pixels from the top-left corner to the number of tiles
-    // from the top-left corner. Then, multiply it by the corresponding
-    // resolution for the current zoom level. Finally, get the ceiling value
+    // the current zoom level and the tile size. First, divide by the length
+    // of the coordinate at the current zoom level. Then, get the ceiling value
     // because the possible values range from 1 to mapSize.
     x_val = Math.ceil(x_val/Drupal.game.map.coordinateLength());
     y_val = Math.ceil(y_val/Drupal.game.map.coordinateLength());
