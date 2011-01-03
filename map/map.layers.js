@@ -23,8 +23,8 @@
     var fetchTiles = new Array();
     for(var i = 0; i < visTiles.length; i++) {
       var tileArr = visTiles[i];
-      if(tileArr[0] >= 0 && tileArr[1] >= 0) {
-        var tileName = type + '-' + tileArr[0] + '-' + tileArr[1] + '-' + Drupal.game.map.zoom;
+      if(tileArr.x >= 0 && tileArr.y >= 0) {
+        var tileName = type + '-' + tileArr.x + '-' + tileArr.y + '-' + Drupal.game.map.zoom;
         visTilesMap[tileName] = true;
         var divName = "#" + tileName;
         if($(divName).length == 0) {
@@ -104,7 +104,7 @@
     var counter = 0;
     for (var x = startX; x <= (tilesX + startX); x++) {
       for (var y = startY; y <= (tilesY + startY); y++) {
-        visibleTiles[counter++] = [x, y];
+        visibleTiles[counter++] = {x: x, y: y};
       }
     }
     return visibleTiles;
