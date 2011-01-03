@@ -18,8 +18,6 @@
   box-shadow: 3px 0 20px #000;
   -moz-box-shadow: 3px 0 20px #000;
   -webkit-box-shadow: 3px 0 20px #000;
-  filter: progid:DXImageTransform.Microsoft.Shadow(color=#000000, direction='180', strength='10');
-  -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(color=#000000, direction='180', strength='10')";
 }
 
 .throbber {
