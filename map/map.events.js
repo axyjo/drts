@@ -33,7 +33,7 @@
   }
 
   Drupal.game.map.events.dblclick = function(e) {
-    Drupal.game.map.setZoom(Drupal.game.map.zoom - 1);
+    Drupal.game.map.zoomIn();
     Drupal.game.map.bar.position(e);
   }
 
