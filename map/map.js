@@ -17,7 +17,11 @@ Drupal.game.map.init = function() {
   Drupal.game.map.mapSize = Drupal.settings.map_size;
   Drupal.game.map.borderCache = Drupal.settings.border_cache;
   Drupal.game.map.layers.tilesets = Drupal.settings.tilesets;
-  Drupal.game.map.resetZoom();
+  $(document).ready(function() {
+    Drupal.game.map.events.init();
+    Drupal.game.map.resetZoom();
+    $(window).triggerHandler('resize');
+  });
 }
 
 Drupal.game.map.coordinateLength = function() {

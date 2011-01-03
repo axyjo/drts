@@ -1,7 +1,6 @@
 (function ($) {
 
   Drupal.game.map.drag = Drupal.game.map.drag || {};
-  Drupal.game.map.drag.map = Drupal.game.map;
 
   Drupal.game.map.dragging = false;
 

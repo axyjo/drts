@@ -1,16 +1,15 @@
 (function ($) {
 
   Drupal.game.map.bar = Drupal.game.map.bar || {};
-  Drupal.game.map.bar.map = Drupal.game.map;
 
   Drupal.game.map.bar.init = function() {
 
   }
 
   Drupal.game.map.bar.populate = function(position) {
-    if(position.x > 0 && pos.y > 0 && pos.x <= mapSize && pos.y <= mapSize) {
+    if(position.x > 0 && position.y > 0 && position.x <= Drupal.game.map.mapSize && position.y <= Drupal.game.map.mapSize) {
       if(typeof this.ajax_request != 'undefined') {
-        ajax_request.abort();
+        this.ajax_request.abort();
       }
       // Store the hover/click request in a variable so that it can be easily
       // aborted.
@@ -31,8 +30,8 @@
 
     // Set x_val and y_val equal to the distance from the top-left of the
     // image layer.
-    var x_val = e.pageX - offset.left + Math.abs(this.map.viewport.left());
-    var y_val = e.pageY - offset.top + Math.abs(this.map.viewport.top());
+    var x_val = e.pageX - offset.left + Math.abs(Drupal.game.map.viewport.left());
+    var y_val = e.pageY - offset.top + Math.abs(Drupal.game.map.viewport.top());
 
     // Change x_val and y_val such that the script takes into consideration
     // the current zoom level and the tile size. First, divide by tile size to
@@ -40,8 +39,8 @@
     // from the top-left corner. Then, multiply it by the corresponding
     // resolution for the current zoom level. Finally, get the ceiling value
     // because the possible values range from 1 to mapSize.
-    x_val = Math.ceil(x_val/this.coordinateLength());
-    y_val = Math.ceil(y_val/this.coordinateLength());
+    x_val = Math.ceil(x_val/Drupal.game.map.coordinateLength());
+    y_val = Math.ceil(y_val/Drupal.game.map.coordinateLength());
 
     position =  {x: x_val, y: y_val};
     $("#map_position").html(position.x + ", " + position.y);

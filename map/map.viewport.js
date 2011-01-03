@@ -1,7 +1,6 @@
 (function ($) {
 
   Drupal.game.map.viewport = Drupal.game.map.viewport || {};
-  Drupal.game.map.viewport.map = Drupal.game.map;
 
   Drupal.game.map.viewport.top = function() {
     return $("#map_viewport").offset().top;
