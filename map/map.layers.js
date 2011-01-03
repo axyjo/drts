@@ -23,17 +23,15 @@
     var fetchTiles = new Array();
     for(var i = 0; i < visTiles.length; i++) {
       var tileArr = visTiles[i];
-      if(tileArr.x >= 0 && tileArr.y >= 0) {
-        var tileName = type + '-' + tileArr.x + '-' + tileArr.y + '-' + Drupal.game.map.zoom;
-        visTilesMap[tileName] = true;
-        var divName = "#" + tileName;
-        if($(divName).length == 0) {
-          var cached = $("#map_viewport").data(tileName);
-          if(cached != undefined && cached.html != undefined) {
-            $("#map_viewport").append(cached.html);
-          } else {
-            fetchTiles.push(tileName);
-          }
+      var tileName = type + '-' + tileArr.x + '-' + tileArr.y + '-' + Drupal.game.map.zoom;
+      visTilesMap[tileName] = true;
+      var divName = "#" + tileName;
+      if($(divName).length == 0) {
+        var cached = $("#map_viewport").data(tileName);
+        if(cached != undefined && cached.html != undefined) {
+          $("#map_viewport").append(cached.html);
+        } else {
+          fetchTiles.push(tileName);
         }
       }
     }
@@ -82,6 +80,20 @@
     }
   }
   
+  Drupal.game.map.layers.validateTiles = function(tiles) {
+    var maxTiles = Drupal.game.map.maxTiles;
+    for(var i = 0; i < tiles.length; i++) {
+      var tile = tiles[i];
+      if(tile.x < 0 || tile.y < 0 || tile.x >= maxTiles || tile.y >= maxTiles) {
+        tiles.splice(i, 1);
+        // Keep the index where it was so that it can check the new element at
+        // the same index.
+        i--;
+      }
+    }
+    return tiles;
+  }
+  
   Drupal.game.map.layers.getVisibleTiles = function() {
     // Get the current offset from the 0, 0 position.
     var mapX = Drupal.game.map.viewport.left();
@@ -107,7 +119,7 @@
         visibleTiles[counter++] = {x: x, y: y};
       }
     }
-    return visibleTiles;
+    return this.validateTiles(visibleTiles);
   }
   
   
