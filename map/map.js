@@ -6,7 +6,6 @@ Drupal.behaviors.game = {
   attach: function(context, settings) {
     // Set the initial state of the game.
     $('#map', context).once('game', Drupal.game.map.init);
-    $(window).triggerHandler('resize');
   }
 };
 
@@ -21,6 +20,7 @@ Drupal.game.map.init = function() {
     Drupal.game.map.events.init();
     Drupal.game.map.resetZoom();
     $(window).triggerHandler('resize');
+    window.setTimeout(Drupal.game.map.events.resize, '1');
   });
 }
 

@@ -61,6 +61,7 @@
         }
       }
     });
+    $(window).triggerHandler('resize');
   }
   
   Drupal.game.map.layers.clear = function(type) {
