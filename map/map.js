@@ -21,9 +21,12 @@ Drupal.game.map.init = function() {
 }
 
 Drupal.game.map.coordinateLength = function() {
-  // Resolutions are zoom levels to squares on the edge of a tile.
-  var resolutions = {0: 1,1: 2,2: 4, 3:8, 4:16, 5:32, 6:64, 7:128, 8:256, 9:512};
-  return this.tileSize * resolutions[this.zoom];
+  // Resolutions are zoom levels to pixels per coordinate. Zoom level 0 is
+  // zoomed all the way in, while zoom level 9 is zoomed all the way out.
+  // Answers the question: How long is one side of the square allocated to a
+  // coordinate (in pixels)? Response is equivalent to the following code:
+  // var resolutions = {0: 1,1: 2,2: 4, 3:8, 4:16, 5:32, 6:64, 7:128};
+  return Math.pow(2, this.zoom);
 }
 
 Drupal.game.map.resetZoom = function() {
@@ -35,11 +38,12 @@ Drupal.game.map.resetZoom = function() {
 Drupal.game.map.setZoom = function(z) {
   if(z < 0) {
     z = 0;
-  } else if(z > 9) {
-    z = 9;
+  } else if(z > 7) {
+    z = 7;
   }
   this.zoom = z;
-  var totalSize = this.mapSize * this.coordinateLength();
+  console.log(this.mapSize, this.coordinateLength());
+  var totalSize = this.mapSize* this.coordinateLength();
   $("#map_viewport").width(totalSize);
   $("#map_viewport").height(totalSize);
   this.layers.checkAll();

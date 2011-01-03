@@ -22,7 +22,7 @@ function map_display() {
   $settings['tile_size'] = variable_get('map_tile_size');
   $settings['defaultx'] = variable_get('map_default_x');
   $settings['defaulty'] = variable_get('map_default_y');
-  $settings['defaultz'] = variable_get('map_default_z');
+  $settings['defaultz'] = 2;
   $settings['border_cache'] = 4;
   $settings['tilesets'] = array('base');
   drupal_add_js($settings, 'setting');
