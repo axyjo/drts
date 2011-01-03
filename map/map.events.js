@@ -63,7 +63,11 @@
   }
   
   Drupal.game.map.events.resize = function() {
-    var toolbar = Drupal.toolbar.height();
+    if(Drupal.toolbar != undefined) {
+      var toolbar = Drupal.toolbar.height();
+    } else {
+      var toolbar = 0;
+    }
     $("#map_viewport").width($(window).width()-$("#map_bar").width());
     $("#map_viewport").height($(window).height() - toolbar);
     $("#map").offset({left: $(window).width() - $("#map_viewport").width(), top: toolbar});
