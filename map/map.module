@@ -13,7 +13,7 @@ function map_display() {
   drupal_add_js(drupal_get_path('module', 'map').'/map.js');
   drupal_add_js(drupal_get_path('module', 'map').'/map.layers.js');
   drupal_add_js(drupal_get_path('module', 'map').'/map.viewport.js');
-  drupal_add_js(drupal_get_path('module', 'map').'/map.box.js');
+  drupal_add_js(drupal_get_path('module', 'map').'/map.bar.js');
   drupal_add_js(drupal_get_path('module', 'map').'/map.events.js');
   drupal_add_js(drupal_get_path('module', 'map').'/map.drag.js');
 

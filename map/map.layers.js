@@ -2,8 +2,6 @@
 
   Drupal.game.map.layers = Drupal.game.map.layers || {};
   Drupal.game.map.layers.map = Drupal.game.map;
-
-  Drupal.game.map.layers.tilesets = Drupal.settings.tilesets;
   // Lock for the checkAll() function so that we don't check too many times on
   // a particular event trigger.
   Drupal.game.map.layers.checkLock = false;

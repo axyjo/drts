@@ -2,13 +2,22 @@
   
 Drupal.game.map = Drupal.game.map || {};
 
+Drupal.behaviors.game = {
+  attach: function(context, settings) {
+    // Set the initial state of the game.
+    $('#map', context).once('game', Drupal.game.map.init);
+    $(window).triggerHandler('resize');
+  }
+};
+
 Drupal.game.map.zoom = undefined;
-Drupal.game.map.tileSize = Drupal.settings.tile_size;
-Drupal.game.map.mapSize = Drupal.settings.map_size;
-Drupal.game.map.borderCache = Drupal.settings.border_cache;
 
 Drupal.game.map.init = function() {
-  this.resetZoom();
+  Drupal.game.map.tileSize = Drupal.settings.tile_size;
+  Drupal.game.map.mapSize = Drupal.settings.map_size;
+  Drupal.game.map.borderCache = Drupal.settings.border_cache;
+  Drupal.game.map.layers.tilesets = Drupal.settings.tilesets;
+  Drupal.game.map.resetZoom();
 }
 
 Drupal.game.map.coordinateLength = function() {
@@ -30,9 +39,10 @@ Drupal.game.map.setZoom = function(z) {
     z = 9;
   }
   this.zoom = z;
-  var totalSize = tileSize*mapSize/resolutions[zoom];
+  var totalSize = this.mapSize * this.coordinateLength();
   $("#map_viewport").width(totalSize);
   $("#map_viewport").height(totalSize);
+  this.layers.checkAll();
 }
 
 Drupal.game.map.zoomIn = function() {
