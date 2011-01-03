@@ -79,12 +79,29 @@
     }
   }
   
+  Drupal.game.map.layers.convertNegativeTile = function(tile) {
+    var maxTiles = Drupal.game.map.maxTiles;
+    tile = tile[0];
+    if(tile.x >= maxTiles) {
+      tile.x = tile.x % maxTiles;
+    } else if(tile.x < 0) {
+      tile.x = tile.x % maxTiles + maxTiles;
+    }
+    if(tile.y >= maxTiles) {
+      tile.y = tile.y % maxTiles;
+    } else if(tile.y < 0) {
+      tile.y = tile.y % maxTiles + maxTiles;
+    }
+    return tile;
+  }
+  
   Drupal.game.map.layers.validateTiles = function(tiles) {
     var maxTiles = Drupal.game.map.maxTiles;
     for(var i = 0; i < tiles.length; i++) {
       var tile = tiles[i];
       if(tile.x < 0 || tile.y < 0 || tile.x >= maxTiles || tile.y >= maxTiles) {
-        tiles.splice(i, 1);
+        var tile = tiles.splice(i, 1);
+        tiles.push(this.convertNegativeTile(tile));
         // Keep the index where it was so that it can check the new element at
         // the same index.
         i--;
