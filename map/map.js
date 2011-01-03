@@ -1,287 +1,47 @@
 (function ($) {
-  $(document).ready(function() {
-    var tileSize = Drupal.settings.tile_size;
-    var mapSize = Drupal.settings.map_size;
-    // Resolutions are zoom levels to squares on the edge of a tile.
-    var resolutions = {0: 1,1: 2,2: 4, 3:8, 4:16, 5:32, 6:64, 7:128, 8:256, 9:512};
-    var dragging = false;
-    var top;
-    var left;
-    var dragStartTop;
-    var dragStartLeft;
-    var zoom = Drupal.settings.defaultz;
-    var totalSize;
-    var border_cache = 4;
-    // Store the hover/click request in a variable so that it can be easily
-    // aborted.
-    var ajax_request;
-    // Lock for the checkAllLayers() function so that we don't check too many
-    // times on page load.
-    var checkLock = true;
+  
+Drupal.game.map = Drupal.game.map || {};
 
-    $("#map").bind("click", function(e) {
-      var pos = getPosition(e);
-      data_request("click", pos);
-    });
+Drupal.game.map.zoom = undefined;
+Drupal.game.map.tileSize = Drupal.settings.tile_size;
+Drupal.game.map.mapSize = Drupal.settings.map_size;
+Drupal.game.map.borderCache = Drupal.settings.border_cache;
 
-    $("#map").bind("dblclick", function(e) {
-      zoom--;
-      setZoom(zoom, e);
-    });
+Drupal.game.map.init = function() {
+  this.resetZoom();
+}
 
-    $("#map").bind("mousedown", function(e) {
-      dragStartLeft = e.clientX;
-      dragStartTop = e.clientY;
-      $("#map_viewport").css("cursor" , "move");
+Drupal.game.map.coordinateLength = function() {
+  // Resolutions are zoom levels to squares on the edge of a tile.
+  var resolutions = {0: 1,1: 2,2: 4, 3:8, 4:16, 5:32, 6:64, 7:128, 8:256, 9:512};
+  return this.tileSize * resolutions[this.zoom];
+}
 
-      top = $("#map_viewport").offset().top;
-      left = $("#map_viewport").offset().left;
+Drupal.game.map.resetZoom = function() {
+  var zoom;
+  zoom = Drupal.settings.defaultz;
+  this.setZoom(zoom);
+}
 
-      dragging = true;
-      // The following return statement exists in order to prevent the user's
-      // browser from dragging the tile image like a conventional picture.
-      return false;
-    });
+Drupal.game.map.setZoom = function(z) {
+  if(z < 0) {
+    z = 0;
+  } else if(z > 9) {
+    z = 9;
+  }
+  this.zoom = z;
+  var totalSize = tileSize*mapSize/resolutions[zoom];
+  $("#map_viewport").width(totalSize);
+  $("#map_viewport").height(totalSize);
+}
 
-    $("#map").bind("mousemove", function(e) {
-      if(dragging) {
-        var new_left = left + (e.clientX - dragStartLeft);
-        var new_top = top + (e.clientY - dragStartTop);
-        viewport_safe_move(new_left, new_top);
-      }
-      var pos = updatePosition(e);
-    });
+Drupal.game.map.zoomIn = function() {
+  this.setZoom(this.zoom--);
+}
 
-    // Instead of binding the mouseup event to the map, bind it to the document
-    // so that even if the mouse is let go when the cursor is ourside of the
-    // div, the map will not drag again when the cursor is brought in to the
-    // div again.
-    $(document).bind("mouseup", function(e) {
-      dragging = false;
-      updatePosition(e);
-      $("#map_viewport").css("cursor", "");
-      checkAllLayers();
-    });
+Drupal.game.map.zoomOut = function() {
+  this.setZoom(this.zoom--);
+}
 
-    function data_request(type, pos) {
-      if(pos.x > 0 && pos.y > 0 && pos.x <= mapSize && pos.y <= mapSize) {
-        if(typeof ajax_request != 'undefined') ajax_request.abort();
-        ajax_request = $.ajax({
-          type: "GET",
-          url: "?q=map_" + type + "/" + Math.floor(pos.x) + '/' + Math.floor(pos.y),
-          success: function(data){
-            $('#map_data').html(data);
-          },
-        });
-      }
-    }
-
-    function updatePosition(e) {
-      var pos = getPosition(e);
-      $("#map_position").html(pos.x + ", " + pos.y);
-      return pos;
-    }
-
-    function getPosition(e) {
-      // The offset function returns the distance from the edge of the page to
-      // the edge of the map div.
-      var offset = $("#map").offset();
-
-      // Set x_val and y_val equal to the distance from the top-left of the
-      // image layer.
-      var x_val = e.pageX - offset.left + Math.abs($("#map_viewport").offset().left);
-      var y_val = e.pageY - offset.top + Math.abs($("#map_viewport").offset().top);
-
-      // Change x_val and y_val such that the script takes into consideration
-      // the current zoom level and the tile size. First, divide by tile size to
-      // convert from pixels from the top-left corner to the number of tiles
-      // from the top-left corner. Then, multiply it by the corresponding
-      // resolution for the current zoom level. Finally, get the ceiling value
-      // because the possible values range from 1 to mapSize.
-      x_val = Math.ceil(x_val/tileSize*resolutions[zoom]);
-      y_val = Math.ceil(y_val/tileSize*resolutions[zoom]);
-
-      return {x: x_val, y: y_val};
-    }
-
-    function setPosition(x, y, z) {
-      setZoom(z);
-      setCenter(x, y);
-    }
-
-    function setCenter(x,y) {
-      // TODO: Implement this function.
-    }
-
-    function setZoom(z, e) {
-      if(z < 0) {
-        z = 0;
-      } else if(z > 9) {
-        z = 9;
-      }
-      zoom = z;
-      totalSize = tileSize*mapSize/resolutions[zoom];
-      $("#map_viewport").width(totalSize);
-      $("#map_viewport").height(totalSize);
-      if(typeof e  != 'undefined') {
-        updatePosition(e);
-      }
-      resize();
-      window.setTimeout(resize, 100);
-      window.setTimeout(resize, 200);
-    }
-
-    // Positive values for delta_x move left and positive values for delta_y
-    // move up.
-    function pan(delta_x, delta_y) {
-      var x = $("#map_viewport").offset().left+delta_x;
-      var y = $("#map_viewport").offset().top+delta_y;
-      viewport_safe_move(x, y, true);
-      checkAllLayers();
-    }
-
-    function viewport_safe_move(left, top, animate) {
-      if(left > 0) {
-        left = 0;
-      } else if(left < (-1*totalSize)+$("#map_viewport").width()) {
-        left = (-1*totalSize)+$("#map_viewport").width();
-      }
-
-      if(top > 0) {
-        top = 0;
-      } else if(top < (-1*totalSize)+$("#map_viewport").height()) {
-        top = (-1*totalSize)+$("#map_viewport").height();
-      }
-
-      if(animate != undefined) {
-        $("#map_viewport").animate({top: top, left: left});
-      } else {
-        $("#map_viewport").offset({top: top, left: left});
-      }
-      // Performance tweak: don't checkAllTiles() here. Instead, check it after
-      // the mouse is let go. Downside: less instantaneous loading, but this can
-      // be fixed using liberal prefetch options and display gimmics down the
-      // road such as caching beyond the borders or just scaling the currently
-      // loaded images like Google Maps.
-    }
-
-    function getVisibleTiles() {
-      // Get the current offset from the 0, 0 position.
-      var mapX = $("#map_viewport").offset().left;
-      var mapY = $("#map_viewport").offset().top;
-
-      // Get the first tile that should be visible. The border_cache variable
-      // exists as the script should download border_cache tiles beyond the
-      // visible border.
-      var startX = Math.abs(Math.floor(mapX / tileSize)) - border_cache;
-      var startY = Math.abs(Math.floor(mapY / tileSize)) - border_cache;
-
-      // Get the number of tiles that are completely visible. The border_cache
-      // variable exists so that the script downloads partially visible tiles as
-      // well. This value does not change unless the viewport size is changed.
-      var tilesX = Math.ceil($("#map_viewport").width() / tileSize) + border_cache;
-      var tilesY = Math.ceil($("#map_viewport").height() / tileSize) + border_cache;
-
-      // Generate the list of visible tiles based on the above variables.
-      var visibleTiles = [];
-      var counter = 0;
-      for (var x = startX; x <= (tilesX + startX); x++) {
-        for (var y = startY; y <= (tilesY + startY); y++) {
-          visibleTiles[counter++] = [x, y];
-        }
-      }
-
-      return visibleTiles;
-    }
-
-    function checkAllLayers() {
-      if(!checkLock) {
-        checkLayers("base");
-      }
-    }
-
-    function checkLayers(type) {
-      var visTiles = getVisibleTiles();
-      var visTilesMap = {};
-      var fetchTiles = new Array();
-      for(var i = 0; i < visTiles.length; i++) {
-        var tileArr = visTiles[i];
-        if(tileArr[0] >= 0 && tileArr[1] >= 0) {
-          var tileName = type + '-' + tileArr[0] + '-' + tileArr[1] + '-' + zoom;
-          visTilesMap[tileName] = true;
-          var divName = "#" + tileName;
-          if($(divName).length == 0) {
-            var cached = $("#map_viewport").data(tileName);
-            if(cached != undefined && cached.html != undefined) {
-              $("#map_viewport").append(cached.html);
-            } else {
-              fetchTiles.push(tileName);
-            }
-          }
-        }
-      }
-
-      var url = Drupal.settings.basePath + "?q=tiles";
-      var fetch = false;
-      for(var tile in fetchTiles) {
-        url = url + "&tiles[]=" + encodeURIComponent(fetchTiles[tile]);
-        fetch = true;
-      }
-      if(fetch) {
-        $.getJSON(url, function(data) {
-          if(data != undefined) {
-            $.each(data, function(index, value) {
-              if(value != undefined && value.html != undefined) {
-                $("#map_viewport").append(value.html);
-                $("#map_viewport").data(index, value);
-              }
-            });
-          }
-        }, "json");
-      }
-      
-      $("#map_viewport img").each(function(i) {
-        if($(this).hasClass(type)) {
-          var id = $(this).attr('id');
-          if(visTilesMap[id] != true) {
-            $(this).remove();
-          }
-        }
-      });
-    }
-    
-    function clearAllTiles(type) {
-      $("#map_viewport img").each(function(i) {
-        if($(this).hasClass(type)) {
-          $(this).remove();
-        }
-      });
-    }
-
-    function resize() {
-      var toolbar = Drupal.toolbar.height();
-      $("#map_viewport").width($(window).width()-$("#map_bar").width());
-      $("#map_viewport").height($(window).height() - toolbar);
-      $("#map").offset({left: $(window).width() - $("#map_viewport").width(), top: toolbar});
-      $("#map_bar").offset({top: toolbar});
-      $("#map_bar").height($("#map_viewport").height());
-      $("#map_bar").width($(window).width() - $("#map_viewport").width());
-      $("#map_position").offset({top: $("#map_bar").height()});
-      checkAllLayers();
-    }
-    $(window).resize(resize);
-
-    checkLock = false;
-    setZoom(zoom);
-
-    $(document).bind('keydown', 'up', function() {pan(0, 100);});
-    $(document).bind('keydown', 'down', function() {pan(0, -100);});
-    $(document).bind('keydown', 'left', function() {pan(100, 0);});
-    $(document).bind('keydown', 'right', function() {pan(-100, 0);});
-
-    $(document).bind('keydown', '+', function() {setZoom(zoom--);});
-    $(document).bind('keydown', '-', function() {setZoom(zoom++);});
-
-  });
 })(jQuery);
 
