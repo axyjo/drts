@@ -18,12 +18,12 @@ function map_display() {
   drupal_add_js(drupal_get_path('module', 'map').'/map.drag.js');
 
   // Pass Javascript variables.
-  $settings['map_size'] = 1024;
+  $settings['map_size'] = variable_get('map_max_size');
   $settings['tile_size'] = variable_get('map_tile_size');
   $settings['defaultx'] = variable_get('map_default_x');
   $settings['defaulty'] = variable_get('map_default_y');
   $settings['defaultz'] = 2;
-  $settings['border_cache'] = 4;
+  $settings['border_cache'] = 2;
   $settings['tilesets'] = array('base');
   drupal_add_js($settings, 'setting');
 
@@ -86,9 +86,3 @@ function map_menu() {
 
   return $items;
 }
-
-function map_get_ninesixty_factors() {
-  return array(1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 16, 20, 24, 30, 32, 40, 48, 60, 64, 80, 96, 120, 160, 192, 240, 320, 480, 960);
-}
-
-
