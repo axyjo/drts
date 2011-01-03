@@ -22,9 +22,9 @@ function map_display() {
   drupal_add_js($settings, 'setting');
 
   $return = '<div id="map">';
-  $return .= '<div id="map_viewport"></div><div class="ajax-progress" id="map_bar"><div id="map_position"></div><div class="throbber"></div></div>';
+  $return .= '<div id="map_viewport"></div>';
   $return .= '</div>';
-  $return .= '<div id="map_data"></div>';
+  $return .= '<div id="map_bar"><div id="map_data"></div><div id="map_position"></div></div>';
 
   return $return;
 }

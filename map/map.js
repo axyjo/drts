@@ -12,7 +12,6 @@
     var zoom = Drupal.settings.defaultz;
     var totalSize;
     var border_cache = 4;
-    var throbber = $("#map_bar .throbber");
     // Store the hover/click request in a variable so that it can be easily
     // aborted.
     var ajax_request;
@@ -65,7 +64,6 @@
     });
 
     function data_request(type, pos) {
-      throbberShow();
       if(pos.x > 0 && pos.y > 0 && pos.x <= mapSize && pos.y <= mapSize) {
         if(typeof ajax_request != 'undefined') ajax_request.abort();
         ajax_request = $.ajax({
@@ -76,7 +74,6 @@
           },
         });
       }
-      throbberHide();
     }
 
     function updatePosition(e) {
@@ -142,14 +139,6 @@
       viewport_safe_move(x, y, true);
       checkAllLayers();
     }
-    
-    function throbberShow() {
-      throbber.css("background-position-y", "-18px");
-    }
-    
-    function throbberHide() {
-      throbber.css("background-position-y", "2px");
-    }
 
     function viewport_safe_move(left, top, animate) {
       if(left > 0) {
@@ -212,7 +201,6 @@
     }
 
     function checkLayers(type) {
-      throbberShow();
       var visTiles = getVisibleTiles();
       var visTilesMap = {};
       var fetchTiles = new Array();
@@ -260,7 +248,6 @@
           }
         }
       });
-      throbberHide();
     }
     
     function clearAllTiles(type) {
@@ -273,13 +260,13 @@
 
     function resize() {
       var toolbar = Drupal.toolbar.height();
-      $("#map_viewport").width($(window).width()-$("#map_data").width());
+      $("#map_viewport").width($(window).width()-$("#map_bar").width());
       $("#map_viewport").height($(window).height() - toolbar);
       $("#map").offset({left: $(window).width() - $("#map_viewport").width(), top: toolbar});
-      $("#map_data").offset({top: toolbar});
-      $("#map_data").height($("#map_viewport").height());
-      $("#map_data").width($(window).width() - $("#map_viewport").width());
-      $("#map_bar").offset({left:$("#map_data").width(), top:$(window).height() - 30});
+      $("#map_bar").offset({top: toolbar});
+      $("#map_bar").height($("#map_viewport").height());
+      $("#map_bar").width($(window).width() - $("#map_viewport").width());
+      $("#map_position").offset({top: $("#map_bar").height()});
       checkAllLayers();
     }
     $(window).resize(resize);
