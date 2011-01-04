@@ -23,11 +23,11 @@
     // Reset the starting coordinates.
     this.dragStartLeft = this.dragEndLeft;
     this.dragStartTop = this.dragEndTop;
-    Drupal.game.map.layers.checkAll();
   }
 
   Drupal.game.map.drag.end = function() {
     this.dragging = false;
+    Drupal.game.map.layers.checkAll();
   }
 
 })(jQuery);
