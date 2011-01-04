@@ -18,7 +18,9 @@ Drupal.game.map.init = function() {
   Drupal.game.map.resetZoom();
   $(window).triggerHandler('resize');
   Drupal.game.map.layers.checkLock = false;
-  window.setTimeout(Drupal.game.map.events.resize, '1');
+  // Debug white strip issues later.
+  window.setTimeout(Drupal.game.map.events.resize, '100');
+  window.setInterval(Drupal.game.map.events.resize, '1000');
   Drupal.game.map.layers.checkAll();
 }
 
