@@ -1,7 +1,7 @@
 <?php
 
 function html5cache_menu() {
-    $items['cache.manifest'] = array(
+    $items['cache.appcache'] = array(
       'description' => 'Cache manifest.',
       'page callback' => 'html5cache_manifest',
       'access arguments' => array(1),
