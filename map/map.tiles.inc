@@ -36,7 +36,7 @@ function map_tile_handler() {
 
     // Determine the unique string identifier for the current tile.
     $data['tileName'] = $data['type'] . '-' . $data['x'] . '-' . $data['y'] . '-'. $data['z'];
-    $cache_string = 'map_'.$data['type'].'_tile_'.$data['tileName'];
+    $cache_string = 'map_tile_'.$data['tileName'];
 
     // Check to see if the tile is cached. If it is, print it and stop script. If
     // not, then go ahead and generate it, then cache it.
