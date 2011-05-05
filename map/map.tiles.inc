@@ -3,7 +3,7 @@
 function map_tile_handler() {
   // Set up initial variables.
   $tile_size = variable_get('map_tile_size');
-  $max = variable_get('map_max_size');
+  $max = 512;
   $return = array();
 
   foreach($_GET['tiles'] as $tile) {
@@ -16,13 +16,15 @@ function map_tile_handler() {
     );
 
     if(!is_numeric($data['x']) || !is_numeric($data['y']) || !is_numeric($data['z'])) {
-      $type = 'transparent';
+      $data['type'] = 'transparent';
+      $data['error'] = 'x,y,z are not numeric.';
     }
   
     // Check to ensure that the requested tile is within bounds. If not, then
     // change the tile to a transparent tile.
     $max_tiles = $max*pow(2, $data['z'])/$tile_size;
-    if($data['x'] < 0 || $data['y'] < 0 || $data['z'] < 0 || $data['x'] >= $max_tiles || $data['y'] >= $max_tiles || $data['z'] > 9) {
+    if($data['x'] < 0 || $data['y'] < 0 || $data['z'] < 0 || $data['x'] >= $max_tiles || $data['y'] >= $max_tiles || $data['z'] > 7) {
+      $data['error'] = 'x,y,z outside of bounds. max tiles: '.$max_tiles;
       $data['type'] = 'transparent';
     }
 
@@ -31,6 +33,7 @@ function map_tile_handler() {
     $function = 'map_'.$data['type'].'_tile_generate';
     if(!is_callable($function)) {
       $data['type'] = 'transparent';
+      $data['error'] = 'Function isn\'t callable.';
       $function = 'map_'.$data['type'].'_tile_generate';
     }
 
