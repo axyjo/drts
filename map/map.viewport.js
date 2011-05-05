@@ -23,6 +23,11 @@
     left += dLeft;
     top += dTop;
     $("#map_viewport").offset({left: left, top: top});
+    
+    // Check for map viewport bounding box.
+    Drupal.game.map.checkBounds();
+    // Check layers for newly loaded tiles.
+    Drupal.game.map.layers.checkAll();
   }
 
 })(jQuery);

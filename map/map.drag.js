@@ -23,10 +23,16 @@
     // Reset the starting coordinates.
     this.dragStartLeft = this.dragEndLeft;
     this.dragStartTop = this.dragEndTop;
+    
+    // Check for map viewport bounding box.
+    Drupal.game.map.checkBounds();
   }
 
   Drupal.game.map.drag.end = function() {
     this.dragging = false;
+    // Check for map viewport bounding box.
+    Drupal.game.map.checkBounds();
+    // Check layers for newly loaded tiles.
     Drupal.game.map.layers.checkAll();
   }
 

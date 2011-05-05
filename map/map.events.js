@@ -76,5 +76,4 @@
     $("#map_bar").width($(window).width() - $("#map_viewport").width());
     $("#map_position").offset({top: $("#map_bar").height()});
   }
-
 })(jQuery);
