@@ -37,9 +37,6 @@
         fetchTiles.push(tileName);
       }
     }
-    // Initially, set the imgready bind event handler to the last processed
-    // image.
-    var img_id = tileName
 
     var url = Drupal.settings.basePath + "?q=tiles";
     var fetch = false;
